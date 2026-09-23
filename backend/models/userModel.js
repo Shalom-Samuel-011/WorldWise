@@ -11,10 +11,13 @@ const userSchema = new mongoose.Schema({
         type: "String",
         required: [true, "A user must have an email"],
         validate: validator.isEmail,
+        lowercase: true,
+        unique: true,
     },
     password: {
         type: "String",
         required: [true, "A user must have a password"],
+        select: false,
     },
     confirmPassword: {
         type: "String",
@@ -26,11 +29,22 @@ const userSchema = new mongoose.Schema({
             message: "Password and confirm password does not match",
         },
     },
+    role: {
+        type: "String",
+        enum: ["user", "admin"],
+        default: "user",
+    },
 });
+
+userSchema.methods.comparePasswords = async function (payload) {
+    return await bcrypt.compare(payload, this.password);
+};
 
 userSchema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, 12);
     this.confirmPassword = undefined;
 });
 
-export default userModel = mongoose.model("Users", userSchema);
+const userModel = mongoose.model("Users", userSchema);
+
+module.exports = userModel;
