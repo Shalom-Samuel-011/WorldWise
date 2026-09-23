@@ -45,6 +45,7 @@ function Form() {
             position: { lat, lng },
         };
         console.log("Add button clicked!");
+        console.log(newCity);
         handleAddCity(newCity);
         navigate("/app/cities");
     }
@@ -56,14 +57,14 @@ function Form() {
                     setGeocodingError("");
                     setIsLoadingGeocoding(true);
                     const res = await fetch(
-                        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`
+                        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`,
                     );
                     if (!res.ok)
                         throw new Error("Could not fetch data for the city");
                     const data = await res.json();
                     if (!data.countryName)
                         throw new Error(
-                            "This is not a city, Try somewhere else!"
+                            "This is not a city, Try somewhere else!",
                         );
                     setCityName(data.city || data.locality);
                     setCountry(data.countryName);
@@ -76,7 +77,7 @@ function Form() {
             }
             fetchCityData();
         },
-        [lat, lng]
+        [lat, lng],
     );
 
     if (isLoadingGeocoding) return <Spinner />;

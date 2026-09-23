@@ -1,0 +1,22 @@
+{
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "Backend for WordlWise application",
+    "license": "ISC",
+    "author": "Shalom Samuel",
+    "type": "commonjs",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start-dev": "nodemon server.js",
+        "start-prod": "cross-env NODE_ENV=production node server.js"
+    },
+    "dependencies": {
+        "bcryptjs": "^3.0.3",
+        "cross-env": "^10.1.0",
+        "dotenv": "^18.0.0",
+        "express": "^5.2.1",
+        "mongoose": "^9.10.1",
+        "validator": "^13.15.35"
+    }
+}
