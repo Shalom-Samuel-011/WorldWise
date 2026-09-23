@@ -1,31 +1,35 @@
 import { useState, useEffect } from "react";
-import styles from "./Login.module.css";
+import styles from "./Signup.module.css";
 import Button from "../../components/Button";
 import PageNav from "../../components/PageNav";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Signup() {
     // PRE-FILL FOR DEV PURPOSES
-    const [email, setEmail] = useState("jack@example.com");
-    const [password, setPassword] = useState("qwerty");
-    const [message, setMessage] = useState("Do no have an account? Sign up!");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [message, setMessage] = useState("");
     const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
-    const handleSignupClick = function () {
-        navigate("/signup", { replace: true });
-    };
-
     const handleSubmit = async function (e) {
         e.preventDefault();
-        // login(email, password);
+
         const response = await fetch(
-            "http://127.0.0.1:8000/api/v1/users/login",
+            "http://127.0.0.1:8000/api/v1/users/signup",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                    confirmPassword,
+                }),
             },
         );
 
@@ -43,9 +47,18 @@ export default function Login() {
     );
 
     return (
-        <main className={styles.login}>
+        <main className={styles.signup}>
             <PageNav />
             <form className={styles.form} onSubmit={handleSubmit}>
+                <div className={styles.row}>
+                    <label htmlFor="name">Name</label>
+                    <input
+                        type="string"
+                        id="name"
+                        onChange={(e) => setName(e.target.value)}
+                        value={name}
+                    />
+                </div>
                 <div className={styles.row}>
                     <label htmlFor="email">Email address</label>
                     <input
@@ -65,12 +78,20 @@ export default function Login() {
                         value={password}
                     />
                 </div>
-                <h2>{message}</h2>
-                <div className={styles.buttons}>
-                    <Button type="primary">log in</Button>
-                    <Button type="primary" onClick={handleSignupClick}>
-                        Sign up
-                    </Button>
+                <div className={styles.row}>
+                    <label htmlFor="password">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        value={confirmPassword}
+                    />
+                </div>
+
+                {message && <h2>{message}</h2>}
+
+                <div>
+                    <Button type="primary">Sign up</Button>
                 </div>
             </form>
         </main>

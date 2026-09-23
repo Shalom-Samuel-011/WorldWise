@@ -15,6 +15,7 @@ import City from "../components/City";
 import Form from "../components/Form";
 import SpinnerFullPage from "../components/SpinnerFullPage";
 import { AuthProvider } from "../contexts/FakeAuthContext";
+import Signup from "./Pages/Signup";
 
 const Product = lazy(() => import("./Pages/Product"));
 const Pricing = lazy(() => import("./Pages/Pricing"));
@@ -57,6 +58,7 @@ export default function App() {
                             </Route>
 
                             <Route path="login" element={<Login />} />
+                            <Route path="signup" element={<Signup />} />
                             <Route path="*" element={<PageNotFound />} />
                         </Routes>
                     </Suspense>
