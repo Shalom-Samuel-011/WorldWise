@@ -68,8 +68,10 @@ exports.login = async function (req, res, next) {
 
     if (!user) {
         return next(
-            new appError("The user with this email does not exist, Sign in!"),
-            401,
+            new appError(
+                "The user with this email does not exist, Sign in!",
+                401,
+            ),
         );
     }
 
