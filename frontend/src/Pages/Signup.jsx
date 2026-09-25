@@ -11,32 +11,46 @@ export default function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    const [message, setMessage] = useState("");
+    const [message, setMessage] = useState("Already have an account? Log in!");
     const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
+    const handleClickLogin = function () {
+        navigate("/login", { replace: true });
+    };
+
     const handleSubmit = async function (e) {
         e.preventDefault();
+        setIsLoading(true);
+        try {
+            const response = await fetch(
+                "http://127.0.0.1:8000/api/v1/users/signup",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                        confirmPassword,
+                    }),
+                },
+            );
 
-        const response = await fetch(
-            "http://127.0.0.1:8000/api/v1/users/signup",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                    confirmPassword,
-                }),
-            },
-        );
+            const data = await response.json();
+            console.log(data);
+            const { user, token } = data;
 
-        const data = await response.json();
-        console.log(data);
+            if (response.ok) {
+                login(user, token);
+            }
 
-        setMessage(data.message);
+            setMessage(data.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(
@@ -57,6 +71,7 @@ export default function Signup() {
                         id="name"
                         onChange={(e) => setName(e.target.value)}
                         value={name}
+                        placeholder="your name"
                     />
                 </div>
                 <div className={styles.row}>
@@ -66,6 +81,7 @@ export default function Signup() {
                         id="email"
                         onChange={(e) => setEmail(e.target.value)}
                         value={email}
+                        placeholder="your email"
                     />
                 </div>
 
@@ -76,6 +92,7 @@ export default function Signup() {
                         id="password"
                         onChange={(e) => setPassword(e.target.value)}
                         value={password}
+                        placeholder="create a password"
                     />
                 </div>
                 <div className={styles.row}>
@@ -85,13 +102,17 @@ export default function Signup() {
                         id="confirmPassword"
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         value={confirmPassword}
+                        placeholder="confirm your password"
                     />
                 </div>
 
                 {message && <h2>{message}</h2>}
 
-                <div>
+                <div className={styles.buttons}>
                     <Button type="primary">Sign up</Button>
+                    <Button type="secondary" onClick={handleClickLogin}>
+                        Log in
+                    </Button>
                 </div>
             </form>
         </main>

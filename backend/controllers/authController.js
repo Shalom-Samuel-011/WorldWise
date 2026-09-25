@@ -18,7 +18,7 @@ const signAndSendToken = function (
     const token = signToken(payload);
 
     if (user) {
-        res.status(200).json({
+        return res.status(200).json({
             status: "success",
             message,
             user,
@@ -54,6 +54,9 @@ exports.signup = async function (req, res) {
 exports.login = async function (req, res, next) {
     const { email, password } = req.body;
 
+    if (!password && !email)
+        return next(new appError("Enter the credentials to log in", 401));
+
     if (!password) {
         return next(new appError("enter your password to login", 401));
     }
@@ -69,7 +72,7 @@ exports.login = async function (req, res, next) {
     if (!user) {
         return next(
             new appError(
-                "The user with this email does not exist, Sign in!",
+                "The user with this email does not exist, Sign up!",
                 401,
             ),
         );
@@ -83,5 +86,5 @@ exports.login = async function (req, res, next) {
 
     // logging user in
 
-    signAndSendToken(res, { id: user._id });
+    signAndSendToken(res, { id: user._id }, user);
 };

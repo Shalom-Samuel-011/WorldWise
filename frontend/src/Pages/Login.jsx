@@ -2,15 +2,17 @@ import { useState, useEffect } from "react";
 import styles from "./Login.module.css";
 import Button from "../../components/Button";
 import PageNav from "../../components/PageNav";
+import Spinner from "../../components/Spinner";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     // PRE-FILL FOR DEV PURPOSES
-    const [email, setEmail] = useState("jack@example.com");
-    const [password, setPassword] = useState("qwerty");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState("Do no have an account? Sign up!");
-    const { login, isAuthenticated } = useAuth();
+    const { isAuthenticated, login } = useAuth();
     const navigate = useNavigate();
 
     const handleSignupClick = function () {
@@ -19,20 +21,30 @@ export default function Login() {
 
     const handleSubmit = async function (e) {
         e.preventDefault();
-        // login(email, password);
-        const response = await fetch(
-            "http://127.0.0.1:8000/api/v1/users/login",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            },
-        );
+        setIsLoading(true);
+        try {
+            const response = await fetch(
+                "http://127.0.0.1:8000/api/v1/users/login",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                },
+            );
 
-        const data = await response.json();
-        console.log(data);
+            const data = await response.json();
 
-        setMessage(data.message);
+            const { user, token } = data;
+
+            if (response.ok) {
+                login(user, token);
+            }
+
+            setMessage(data.message);
+            setIsLoading(false);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(
@@ -45,33 +57,45 @@ export default function Login() {
     return (
         <main className={styles.login}>
             <PageNav />
-            <form className={styles.form} onSubmit={handleSubmit}>
-                <div className={styles.row}>
-                    <label htmlFor="email">Email address</label>
-                    <input
-                        type="email"
-                        id="email"
-                        onChange={(e) => setEmail(e.target.value)}
-                        value={email}
-                    />
-                </div>
 
-                <div className={styles.row}>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        value={password}
-                    />
-                </div>
-                <h2>{message}</h2>
-                <div className={styles.buttons}>
-                    <Button type="primary">log in</Button>
-                    <Button type="primary" onClick={handleSignupClick}>
-                        Sign up
-                    </Button>
-                </div>
+            <form className={styles.form} onSubmit={handleSubmit}>
+                {isLoading ? (
+                    <Spinner />
+                ) : (
+                    <>
+                        <div className={styles.row}>
+                            <label htmlFor="email">Email address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                onChange={(e) => setEmail(e.target.value)}
+                                value={email}
+                                placeholder="enter your email address"
+                            />
+                        </div>
+
+                        <div className={styles.row}>
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                onChange={(e) => setPassword(e.target.value)}
+                                value={password}
+                                placeholder="your password"
+                            />
+                        </div>
+                        <h2>{message}</h2>
+                        <div className={styles.buttons}>
+                            <Button type="primary">log in</Button>
+                            <Button
+                                type="secondary"
+                                onClick={handleSignupClick}
+                            >
+                                Sign up
+                            </Button>
+                        </div>
+                    </>
+                )}
             </form>
         </main>
     );

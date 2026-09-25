@@ -14,7 +14,7 @@ import CountryList from "../components/CountryList";
 import City from "../components/City";
 import Form from "../components/Form";
 import SpinnerFullPage from "../components/SpinnerFullPage";
-import { AuthProvider } from "../contexts/FakeAuthContext";
+import { AuthProvider } from "../contexts/AuthContext";
 import Signup from "./Pages/Signup";
 
 const Product = lazy(() => import("./Pages/Product"));
