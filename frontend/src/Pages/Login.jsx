@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import styles from "./Login.module.css";
-import Button from "../../components/Button";
-import PageNav from "../../components/PageNav";
-import Spinner from "../../components/Spinner";
-import useAuth from "../../hooks/useAuth";
+import Button from "../components/Button";
+import PageNav from "../components/PageNav";
+import Spinner from "../components/Spinner";
+import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -34,14 +34,16 @@ export default function Login() {
 
             const data = await response.json();
 
-            const { user, token } = data;
-
-            if (response.ok) {
-                login(user, token);
+            if (!response.ok) {
+                throw new Error(data.message || "Something went wrong");
             }
 
+            const { user, token } = data;
+
             setMessage(data.message);
-            setIsLoading(false);
+            login(user, token);
+        } catch (err) {
+            setMessage(err.message);
         } finally {
             setIsLoading(false);
         }

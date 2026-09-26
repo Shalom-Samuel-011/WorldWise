@@ -1,7 +1,7 @@
-import Sidebar from "../../components/Sidebar";
-import Map from "../../components/Map";
+import Sidebar from "../components/Sidebar";
+import Map from "../components/Map";
 import styles from "./AppLayout.module.css";
-import { CitiesProvider } from "../../contexts/CitiesContext";
+import { CitiesProvider } from "../contexts/CitiesContext";
 
 export default function AppLayout() {
     return (

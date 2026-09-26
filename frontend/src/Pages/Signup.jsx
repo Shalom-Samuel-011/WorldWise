@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "./Signup.module.css";
-import Button from "../../components/Button";
-import PageNav from "../../components/PageNav";
-import useAuth from "../../hooks/useAuth";
+import Button from "../components/Button";
+import PageNav from "../components/PageNav";
+import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
