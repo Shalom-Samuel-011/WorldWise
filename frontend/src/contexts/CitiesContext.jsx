@@ -3,6 +3,13 @@ import { createContext, useEffect, useReducer } from "react";
 const CitiesContext = createContext();
 const BASE_URL = "http://localhost:8000";
 
+const initialStates = {
+    cities: [],
+    loading: false,
+    currentCity: {},
+    error: "",
+};
+
 function reducer(state, action) {
     switch (action.type) {
         case "cities/loaded":
@@ -19,7 +26,7 @@ function reducer(state, action) {
             return {
                 ...state,
                 cities: state.cities.filter(
-                    (city) => city.id !== action.payload.id
+                    (city) => city.id !== action.payload.id,
                 ),
                 loading: false,
             };
@@ -34,13 +41,6 @@ function reducer(state, action) {
             throw new Error("Unknown action type");
     }
 }
-
-const initialStates = {
-    cities: [],
-    loading: false,
-    currentCity: {},
-    error: "",
-};
 
 function CitiesProvider({ children }) {
     const [state, dispatch] = useReducer(reducer, initialStates);

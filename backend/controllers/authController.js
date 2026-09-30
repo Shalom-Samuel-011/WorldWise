@@ -1,3 +1,5 @@
+const util = require("util");
+
 const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
@@ -87,4 +89,40 @@ exports.login = async function (req, res, next) {
     // logging user in
 
     signAndSendToken(res, { id: user._id }, user);
+};
+
+exports.protected = async function (req, res, next) {
+    const token = req.headers.authorization?.startsWith("Bearer")
+        ? req.headers.authorization.split(" ")[1]
+        : undefined;
+
+    // checking if the token exists
+    if (!token) {
+        return next(
+            new appError("You need to log in to access this page", 401),
+        );
+    }
+
+    // verifying the token
+    const data = await util.promisify(jwt.verify)(
+        token,
+        process.env.JWT_STRING,
+    );
+
+    // checking if the password has been changed since the issueing of the token
+
+    const user = await userModel.findById(data.id);
+    console.log(user);
+    console.log(data);
+
+    if (user.passwordChanged(data.iat)) {
+        return next(
+            new appError("Password was changed after last log in", 401),
+        );
+    }
+
+    // authorizing user
+    req.user = user;
+
+    next();
 };

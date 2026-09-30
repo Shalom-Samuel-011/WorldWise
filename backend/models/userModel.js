@@ -34,13 +34,29 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "admin"],
         default: "user",
     },
+    passwordChangedAt: Date,
 });
 
 userSchema.methods.comparePasswords = async function (payload) {
     return await bcrypt.compare(payload, this.password);
 };
 
-userSchema.pre("save", async function () {
+userSchema.methods.passwordChanged = function (JWTTimeStamp) {
+    if (!this.passwordChangedAt) {
+        return false;
+    }
+
+    const time = this.passwordChangedAt.getTime() / 1000;
+    return time > JWTTimeStamp;
+};
+
+userSchema.pre("save", async function (next) {
+    if (!this.modified("password")) {
+        return next();
+    }
+    if (!this.isNew && this.modified("password")) {
+        this.passwordChangedAt = Date.now();
+    }
     this.password = await bcrypt.hash(this.password, 12);
     this.confirmPassword = undefined;
 });
