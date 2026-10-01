@@ -1,7 +1,8 @@
 import { createContext, useEffect, useReducer } from "react";
+import useAuth from "../hooks/useAuth";
+import { API_BASE_URL, getAuthHeaders } from "../api";
 
 const CitiesContext = createContext();
-const BASE_URL = "http://localhost:8000";
 
 const initialStates = {
     cities: [],
@@ -45,12 +46,14 @@ function reducer(state, action) {
 function CitiesProvider({ children }) {
     const [state, dispatch] = useReducer(reducer, initialStates);
     const { cities, loading, currentCity } = state;
+    const { isAuthenticated } = useAuth();
 
     async function handleRemoveCity(city) {
         try {
             dispatch({ type: "loading" });
-            const res = await fetch(`${BASE_URL}/cities/${city.id}`, {
+            const res = await fetch(`${API_BASE_URL}/cities/${city.id}`, {
                 method: "DELETE",
+                headers: getAuthHeaders(),
             });
             if (!res.ok) throw new Error("Unable to delete :(");
             const data = await res.json();
@@ -64,11 +67,12 @@ function CitiesProvider({ children }) {
     async function handleAddCity(newCity) {
         try {
             dispatch({ type: "loading" });
-            const res = await fetch(`${BASE_URL}/cities`, {
+            const res = await fetch(`${API_BASE_URL}/cities`, {
                 method: "POST",
                 body: JSON.stringify(newCity),
                 headers: {
                     "content-type": "application/json",
+                    ...getAuthHeaders(),
                 },
             });
             if (!res.ok) throw new Error("Could not add the city, Try again.");
@@ -79,22 +83,34 @@ function CitiesProvider({ children }) {
         }
     }
 
-    useEffect(function () {
-        const fetchCities = async function () {
-            try {
-                dispatch({ type: "loading" });
-                const res = await fetch(`${BASE_URL}/cities`);
-                if (!res.ok) throw new Error("Failed to fetch cities");
+    useEffect(
+        function () {
+            if (!isAuthenticated) return;
+            const fetchCities = async function () {
+                console.log("fetchCities Running");
+                try {
+                    dispatch({ type: "loading" });
+                    const res = await fetch(`${API_BASE_URL}/cities`, {
+                        method: "GET",
+                        headers: getAuthHeaders(),
+                        credentials: "include",
+                    });
 
-                const data = await res.json();
-                dispatch({ type: "cities/loaded", payload: data });
-            } catch (err) {
-                dispatch({ type: "error", payload: err.message });
-            }
-        };
+                    if (!res.ok) throw new Error("Failed to fetch cities");
 
-        fetchCities();
-    }, []);
+                    const data = await res.json();
+
+                    console.log(data);
+                    dispatch({ type: "cities/loaded", payload: data.cities });
+                } catch (err) {
+                    dispatch({ type: "error", payload: err.message });
+                }
+            };
+
+            fetchCities();
+        },
+        [isAuthenticated],
+    );
 
     return (
         <CitiesContext.Provider

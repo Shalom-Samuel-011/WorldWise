@@ -1,18 +1,28 @@
 const express = require("express");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 
 // controllers
 const globalErrorMiddleware = require("./controllers/errorController");
+
+const app = express();
+
+const limiter = rateLimit({
+    max: 100,
+    windowMs: 60 * 1000,
+    message: "Too many requests from this IP. Please try again later.",
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 // routers
 const userRouter = require("./routers/userRouter");
 const citiesRouter = require("./routers/citiesRouter");
 
-const app = express();
-
 // Middlewares
 
 app.use(express.json());
+app.use(limiter);
 
 app.use(
     cors({

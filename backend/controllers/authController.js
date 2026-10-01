@@ -19,6 +19,13 @@ const signAndSendToken = function (
 ) {
     const token = signToken(payload);
 
+    res.cookie("jwt", token, {
+        expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+    });
+
     if (user) {
         return res.status(200).json({
             status: "success",

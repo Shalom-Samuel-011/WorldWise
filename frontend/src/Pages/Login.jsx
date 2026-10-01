@@ -5,6 +5,7 @@ import PageNav from "../components/PageNav";
 import Spinner from "../components/Spinner";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../api";
 
 export default function Login() {
     // PRE-FILL FOR DEV PURPOSES
@@ -23,14 +24,12 @@ export default function Login() {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await fetch(
-                "http://127.0.0.1:8000/api/v1/users/login",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password }),
-                },
-            );
+            const response = await fetch(`${API_BASE_URL}/users/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+                credentials: "include",
+            });
 
             const data = await response.json();
 

@@ -4,6 +4,21 @@ const AuthContext = createContext();
 
 const initialStates = { user: {}, isAuthenticated: false };
 
+function getInitialState() {
+    const token = localStorage.getItem("jwt");
+    const storedUser = localStorage.getItem("user");
+
+    if (!token || !storedUser) return initialStates;
+
+    try {
+        return { user: JSON.parse(storedUser), isAuthenticated: true };
+    } catch {
+        localStorage.removeItem("jwt");
+        localStorage.removeItem("user");
+        return initialStates;
+    }
+}
+
 function reducer(state, action) {
     switch (action.type) {
         case "login":
@@ -16,19 +31,24 @@ function reducer(state, action) {
 }
 
 function AuthProvider({ children }) {
-    const [state, dispatch] = useReducer(reducer, initialStates);
+    const [state, dispatch] = useReducer(reducer, null, getInitialState);
     const { user, isAuthenticated } = state;
 
     function login(user, token) {
-        user.avatar = "https://i.pravatar.cc/100?u=zz";
+        const sessionUser = {
+            name: user.name,
+            avatar: "https://i.pravatar.cc/100?u=zz",
+        };
         localStorage.setItem("jwt", token);
+        localStorage.setItem("user", JSON.stringify(sessionUser));
 
-        dispatch({ type: "login", payload: user });
+        dispatch({ type: "login", payload: sessionUser });
     }
 
     function logout() {
         dispatch({ type: "logout" });
         localStorage.removeItem("jwt");
+        localStorage.removeItem("user");
     }
 
     return (
