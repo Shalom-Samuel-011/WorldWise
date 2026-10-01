@@ -11,6 +11,19 @@ const initialStates = {
     error: "",
 };
 
+function normalizeCity(city) {
+    const coordinates = city.position?.coordinates;
+
+    return {
+        ...city,
+        id: city.id ?? city._id,
+        position:
+            Array.isArray(coordinates) && coordinates.length === 2
+                ? { lat: coordinates[1], lng: coordinates[0] }
+                : city.position,
+    };
+}
+
 function reducer(state, action) {
     switch (action.type) {
         case "cities/loaded":
@@ -21,6 +34,7 @@ function reducer(state, action) {
                 cities: [...state.cities, action.payload],
                 currentCity: action.payload,
                 loading: false,
+                error: "",
             };
         }
         case "city/delete":
@@ -29,12 +43,17 @@ function reducer(state, action) {
                 cities: state.cities.filter(
                     (city) => city.id !== action.payload.id,
                 ),
+                currentCity:
+                    state.currentCity?.id === action.payload.id
+                        ? {}
+                        : state.currentCity,
                 loading: false,
+                error: "",
             };
         case "city/selected":
             return { ...state, currentCity: action.payload };
         case "loading": {
-            return { ...state, loading: true };
+            return { ...state, loading: true, error: "" };
         }
         case "error":
             return { ...state, error: action.payload, loading: false };
@@ -55,12 +74,24 @@ function CitiesProvider({ children }) {
                 method: "DELETE",
                 headers: getAuthHeaders(),
             });
-            if (!res.ok) throw new Error("Unable to delete :(");
             const data = await res.json();
+            if (!res.ok)
+                throw new Error(data.message || "Unable to delete city");
+            if (!data.data)
+                throw new Error("The deleted city was not returned");
 
-            dispatch({ type: "city/delete", payload: data });
+            dispatch({
+                type: "city/delete",
+                payload: normalizeCity(data.data),
+            });
         } catch (err) {
-            dispatch({ type: "error", payload: err.message });
+            dispatch({
+                type: "error",
+                payload:
+                    err instanceof Error
+                        ? err.message
+                        : "Unable to delete city",
+            });
         }
     }
 
@@ -75,11 +106,24 @@ function CitiesProvider({ children }) {
                     ...getAuthHeaders(),
                 },
             });
-            if (!res.ok) throw new Error("Could not add the city, Try again.");
             const data = await res.json();
-            dispatch({ type: "city/add", payload: data });
+            if (!res.ok)
+                throw new Error(data.message || "Could not add the city");
+            if (!data.data)
+                throw new Error("The created city was not returned");
+
+            const city = normalizeCity(data.data);
+            dispatch({ type: "city/add", payload: city });
+            return city;
         } catch (err) {
-            dispatch({ type: "error", payload: err.message });
+            dispatch({
+                type: "error",
+                payload:
+                    err instanceof Error
+                        ? err.message
+                        : "Could not add the city",
+            });
+            return null;
         }
     }
 
@@ -101,7 +145,10 @@ function CitiesProvider({ children }) {
                     const data = await res.json();
 
                     console.log(data);
-                    dispatch({ type: "cities/loaded", payload: data.cities });
+                    dispatch({
+                        type: "cities/loaded",
+                        payload: data.cities.map(normalizeCity),
+                    });
                 } catch (err) {
                     dispatch({ type: "error", payload: err.message });
                 }
@@ -117,6 +164,7 @@ function CitiesProvider({ children }) {
             value={{
                 cities,
                 loading,
+                error: state.error,
                 handleRemoveCity,
                 handleAddCity,
                 currentCity,

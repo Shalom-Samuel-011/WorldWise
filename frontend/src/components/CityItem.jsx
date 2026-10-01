@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./CityItem.module.css";
 import useCities from "../hooks/useCities";
+import Emoji from "./Emoji";
 
 export default function CityItem({ city }) {
     const { handleRemoveCity, dispatch, currentCity } = useCities();
@@ -10,6 +11,10 @@ export default function CityItem({ city }) {
         month: "long",
         year: "numeric",
     });
+    const cityPath =
+        Number.isFinite(position?.lat) && Number.isFinite(position?.lng)
+            ? `${id}?lat=${position.lat}&lng=${position.lng}`
+            : `${id}`;
 
     return (
         <li onClick={() => dispatch({ type: "city/selected", payload: city })}>
@@ -18,11 +23,8 @@ export default function CityItem({ city }) {
                     currentCity?.id === city.id ? styles.cityItemActive : ""
                 }`}
             >
-                <Link
-                    to={`${id}?lat=${position.lat}&lng=${position.lng}`}
-                    className={styles.cityLink}
-                >
-                    <span className={styles.emoji}>{emoji}</span>
+                <Link to={cityPath} className={styles.cityLink}>
+                    <Emoji emoji={emoji} className={styles.emoji} />
                     <p className={styles.name}>{cityName}</p>
                     <p className={styles.date}>({visitDate})</p>
                 </Link>

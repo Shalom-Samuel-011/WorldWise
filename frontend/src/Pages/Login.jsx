@@ -87,7 +87,9 @@ export default function Login() {
                         </div>
                         <h2>{message}</h2>
                         <div className={styles.buttons}>
-                            <Button type="primary">log in</Button>
+                            <Button type="primary" htmlType="submit">
+                                log in
+                            </Button>
                             <Button
                                 type="secondary"
                                 onClick={handleSignupClick}

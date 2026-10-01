@@ -7,13 +7,14 @@ import {
     useMap,
     useMapEvents,
 } from "react-leaflet";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./Map.module.css";
 import useCities from "../hooks/useCities";
 import Spinner from "./Spinner";
 import useGeolocation from "../hooks/useGeolaction";
 import Button from "./Button";
+import Emoji from "./Emoji";
 import useUrlPosition from "../hooks/useUrlPosition";
 import User from "./User";
 
@@ -28,7 +29,7 @@ export default function Map() {
     const [mapPosition, setMapPosition] = useState(
         cities.length
             ? [cities[0].position.lat, cities[0].position.lng]
-            : [40, 0]
+            : [40, 0],
     );
 
     const onUserPosition =
@@ -44,7 +45,7 @@ export default function Map() {
                     geolocationPosition.lng,
                 ]);
         },
-        [geolocationPosition]
+        [geolocationPosition],
     );
 
     return (
@@ -75,24 +76,37 @@ export default function Map() {
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
                         />
-                        {cities?.map((city) => (
-                            <Marker
-                                position={[
-                                    city.position.lat,
-                                    city.position.lng,
-                                ]}
-                                key={city.id}
-                            >
-                                <Popup>
-                                    <span>{city.emoji}</span>{" "}
-                                    <span>{city.className}</span>
-                                </Popup>
-                            </Marker>
-                        ))}
+                        {cities
+                            .filter(
+                                (city) =>
+                                    Number.isFinite(city.position?.lat) &&
+                                    Number.isFinite(city.position?.lng),
+                            )
+                            .map((city) => (
+                                <Marker
+                                    position={[
+                                        city.position.lat,
+                                        city.position.lng,
+                                    ]}
+                                    key={city.id}
+                                >
+                                    <Popup>
+                                        <Emoji
+                                            emoji={city.emoji}
+                                            alt={city.cityName}
+                                            className={styles.popupEmoji}
+                                        />
+                                        <span>{city.cityName}</span>
+                                    </Popup>
+                                </Marker>
+                            ))}
                         {geolocationPosition && (
                             <Marker position={geolocationPosition}></Marker>
                         )}
-                        <ChangeCenter setMapPosition={setMapPosition} />
+                        <ChangeCenter
+                            setMapPosition={setMapPosition}
+                            cities={cities}
+                        />
                         <DetectClick />
                         <UserPosition position={geolocationPosition} />
                     </MapContainer>
@@ -102,17 +116,33 @@ export default function Map() {
     );
 }
 
-function ChangeCenter({ setMapPosition }) {
+function ChangeCenter({ setMapPosition, cities }) {
     const [lat, lng] = useUrlPosition();
     const map = useMap();
+    const hasCenteredOnCity = useRef(false);
     useEffect(
         function () {
             if (!isNaN(lat) && !isNaN(lng)) {
                 map.setView([lat, lng]);
                 setMapPosition([lat, lng]);
+                hasCenteredOnCity.current = true;
+                return;
             }
+
+            if (hasCenteredOnCity.current) return;
+            const firstCity = cities.find(
+                (city) =>
+                    Number.isFinite(city.position?.lat) &&
+                    Number.isFinite(city.position?.lng),
+            );
+            if (!firstCity) return;
+
+            const position = [firstCity.position.lat, firstCity.position.lng];
+            map.setView(position);
+            setMapPosition(position);
+            hasCenteredOnCity.current = true;
         },
-        [map, setMapPosition, lat, lng]
+        [map, setMapPosition, lat, lng, cities],
     );
     return null;
 }
@@ -134,7 +164,7 @@ function UserPosition({ position }) {
         function () {
             if (position) map.setView(position);
         },
-        [position, map]
+        [position, map],
     );
     return null;
 }

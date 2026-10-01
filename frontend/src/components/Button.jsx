@@ -1,8 +1,10 @@
 import styles from "./Button.module.css";
 
-function Button({ type, onClick, children }) {
+function Button({ type, htmlType = "button", onClick, children, disabled }) {
     return (
         <button
+            type={htmlType}
+            disabled={disabled}
             className={`${styles.btn} ${styles[`${type}`]}`}
             onClick={onClick}
         >

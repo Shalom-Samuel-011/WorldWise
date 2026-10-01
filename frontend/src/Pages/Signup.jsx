@@ -108,7 +108,9 @@ export default function Signup() {
                 {message && <h2>{message}</h2>}
 
                 <div className={styles.buttons}>
-                    <Button type="primary">Sign up</Button>
+                    <Button type="primary" htmlType="submit">
+                        Sign up
+                    </Button>
                     <Button type="secondary" onClick={handleClickLogin}>
                         Log in
                     </Button>
