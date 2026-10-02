@@ -29,3 +29,19 @@
     display: flex;
     justify-content: space-between;
 }
+
+.oauthDivider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--color-light--1);
+    font-size: 1.2rem;
+}
+
+.oauthDivider::before,
+.oauthDivider::after {
+    flex: 1;
+    height: 1px;
+    background: rgba(236, 236, 236, 0.2);
+    content: "";
+}

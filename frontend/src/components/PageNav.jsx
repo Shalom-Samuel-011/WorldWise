@@ -20,7 +20,7 @@ export default function Header() {
                 </li>
                 <li>
                     {isAuthenticated ? (
-                        <User />
+                        <User placement="navigation" />
                     ) : (
                         <Button
                             type="primary"

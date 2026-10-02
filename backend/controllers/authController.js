@@ -1,4 +1,6 @@
 const util = require("util");
+const crypto = require("crypto");
+const { OAuth2Client } = require("google-auth-library");
 
 const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken");
@@ -96,6 +98,89 @@ exports.login = async function (req, res, next) {
     // logging user in
 
     signAndSendToken(res, { id: user._id }, user);
+};
+
+exports.googleAuth = async function (req, res, next) {
+    const { credential } = req.body;
+    const clientId = process.env.GOOGLE_CLIENT_ID;
+
+    if (!clientId) {
+        return next(new appError("Google sign-in is not configured", 503));
+    }
+    if (!credential) {
+        return next(
+            new appError("Google did not provide a sign-in token", 400),
+        );
+    }
+
+    let googlePayload;
+    try {
+        const ticket = await new OAuth2Client(clientId).verifyIdToken({
+            idToken: credential,
+            audience: clientId,
+        });
+        googlePayload = ticket.getPayload();
+    } catch {
+        return next(
+            new appError("Google sign-in token is invalid or expired", 401),
+        );
+    }
+
+    if (
+        !googlePayload?.sub ||
+        !googlePayload.email ||
+        !googlePayload.email_verified
+    ) {
+        return next(new appError("A verified Google email is required", 401));
+    }
+
+    const email = googlePayload.email.toLowerCase();
+    let user = await userModel.findOne({ googleId: googlePayload.sub });
+
+    if (!user) {
+        user = await userModel.findOne({ email });
+
+        if (user?.googleId && user.googleId !== googlePayload.sub) {
+            return next(
+                new appError(
+                    "This email is linked to a different Google account",
+                    409,
+                ),
+            );
+        }
+
+        if (user) {
+            user.googleId = googlePayload.sub;
+            if (!user.avatar && googlePayload.picture)
+                user.avatar = googlePayload.picture;
+            await user.save({ validateBeforeSave: false });
+        } else {
+            const generatedPassword = crypto.randomBytes(32).toString("hex");
+            user = await userModel.create({
+                name: googlePayload.name || email,
+                email,
+                password: generatedPassword,
+                confirmPassword: generatedPassword,
+                googleId: googlePayload.sub,
+                avatar: googlePayload.picture,
+            });
+        }
+    }
+
+    const profile = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        role: user.role,
+    };
+
+    signAndSendToken(
+        res,
+        { id: user._id },
+        profile,
+        "Google sign-in successful",
+    );
 };
 
 exports.protected = async function (req, res, next) {

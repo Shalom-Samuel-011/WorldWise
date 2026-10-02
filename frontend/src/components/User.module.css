@@ -1,34 +1,311 @@
-.user {
-  position: absolute;
-  top: 4.2rem;
-  right: 4.2rem;
-  background-color: var(--color-dark--1);
-  padding: 1rem 1.4rem;
-  border-radius: 7px;
-  z-index: 999;
-  box-shadow: 0 0.8rem 2.4rem rgba(36, 42, 46, 0.5);
-  font-size: 1.6rem;
-  font-weight: 600;
-
-  display: flex;
-  align-items: center;
-  gap: 1.6rem;
+.profile {
+    position: absolute;
+    z-index: 1200;
+    top: 2.4rem;
+    right: 2.4rem;
 }
 
-.user img {
-  border-radius: 100px;
-  height: 4rem;
+.navigationPlacement {
+    position: relative;
+    top: auto;
+    right: auto;
+    z-index: auto;
 }
 
-.user button {
-  background-color: var(--color-dark--2);
-  border-radius: 7px;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  color: inherit;
-  font-family: inherit;
-  font-size: 1.2rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  cursor: pointer;
+.profileTrigger {
+    display: block;
+    width: 4.8rem;
+    height: 4.8rem;
+    overflow: hidden;
+    border: 2px solid rgba(236, 236, 236, 0.8);
+    border-radius: 50%;
+    padding: 0;
+    background: var(--color-dark--2);
+    cursor: pointer;
+    box-shadow: 0 0.5rem 1.8rem rgba(0, 0, 0, 0.3);
+    transition:
+        border-color 0.15s,
+        transform 0.15s;
+}
+
+.profileTrigger:hover,
+.profileTrigger:focus-visible,
+.profileTrigger[aria-expanded="true"] {
+    border-color: var(--color-brand--2);
+    transform: scale(1.04);
+    outline: none;
+}
+
+.profileTrigger img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatarInitials {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    background: var(--color-dark--2);
+    color: var(--color-light--2);
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.menu {
+    position: absolute;
+    top: calc(100% + 1rem);
+    right: 0;
+    width: min(26rem, calc(100vw - 3.2rem));
+    padding: 0.8rem;
+    border: 1px solid rgba(236, 236, 236, 0.12);
+    border-radius: 7px;
+    background: var(--color-dark--1);
+    box-shadow: 0 1.2rem 3.2rem rgba(0, 0, 0, 0.4);
+    animation: menuEnter 0.14s ease-out;
+}
+
+.greeting {
+    margin: 0.6rem 0.8rem 0.8rem;
+    overflow-wrap: anywhere;
+    color: var(--color-light--2);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.menu button {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 4px;
+    padding: 0.9rem 0.8rem;
+    background: transparent;
+    color: var(--color-light--2);
+    font: inherit;
+    font-size: 1.4rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.menu button:hover,
+.menu button:focus-visible {
+    background: var(--color-dark--2);
+    outline: none;
+}
+
+.divider {
+    height: 1px;
+    margin: 0.5rem 0;
+    background: rgba(236, 236, 236, 0.12);
+}
+
+.profileBackdrop {
+    position: fixed;
+    z-index: 2000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    background: rgba(12, 16, 18, 0.62);
+    backdrop-filter: blur(5px);
+}
+
+.profileDialog {
+    position: relative;
+    width: min(100%, 36rem);
+    padding: 3.2rem 2.4rem;
+    border: 1px solid rgba(236, 236, 236, 0.12);
+    border-radius: 8px;
+    background: var(--color-dark--1);
+    box-shadow: 0 2rem 6rem rgba(0, 0, 0, 0.42);
+    text-align: center;
+    animation: menuEnter 0.16s ease-out;
+}
+
+.profileAvatar {
+    position: relative;
+    width: 8rem;
+    height: 8rem;
+    margin: 0 auto;
+    overflow: hidden;
+    border: 2px solid var(--color-brand--2);
+    border-radius: 50%;
+    background: var(--color-dark--2);
+}
+
+.profileAvatar img,
+.profileAvatar span {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    object-fit: cover;
+}
+
+.profileAvatar img {
+    border-radius: 50%;
+}
+
+.profileAvatar span {
+    color: var(--color-light--2);
+    font-size: 2.6rem;
+    font-weight: 800;
+}
+
+.profileEmail {
+    margin-top: 0.4rem;
+    color: var(--color-light--1);
+    font-size: 1.3rem;
+    overflow-wrap: anywhere;
+}
+
+.avatarEditButton {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    width: 3.4rem;
+    height: 3.4rem;
+    place-items: center;
+    border: 2px solid var(--color-dark--1);
+    border-radius: 50%;
+    background: var(--color-brand--2);
+    color: var(--color-dark--1);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(0.3rem);
+    transition:
+        opacity 0.15s,
+        transform 0.15s;
+}
+
+.avatarEditButton svg {
+    width: 1.8rem;
+    height: 1.8rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.profileAvatar:hover .avatarEditButton,
+.avatarEditButton:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.avatarEditButton:hover,
+.avatarEditButton:focus-visible {
+    outline: 2px solid var(--color-light--2);
+    outline-offset: 2px;
+}
+
+.avatarEditButton:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.avatarStatus {
+    margin-top: 1.2rem;
+    color: var(--color-brand--2);
+    font-size: 1.3rem;
+}
+
+.avatarInput {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.avatarError {
+    margin-top: 1.2rem;
+    color: #ffb4b4;
+    font-size: 1.3rem;
+}
+
+.profileEyebrow {
+    margin-top: 1.4rem;
+    color: var(--color-brand--2);
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.profileDialog h2 {
+    margin-top: 0.4rem;
+    color: var(--color-light--2);
+    font-size: 2rem;
+    overflow-wrap: anywhere;
+}
+
+.profileClose {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: grid;
+    width: 3.6rem;
+    height: 3.6rem;
+    place-items: center;
+    border: 1px solid rgba(236, 236, 236, 0.18);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-light--2);
+    font: inherit;
+    font-size: 2.4rem;
+    cursor: pointer;
+}
+
+.profileClose:hover,
+.profileClose:focus-visible {
+    border-color: var(--color-brand--2);
+    color: var(--color-brand--2);
+    outline: none;
+}
+
+@keyframes menuEnter {
+    from {
+        opacity: 0;
+        transform: translateY(-0.5rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .profile {
+        top: 1.4rem;
+        right: 1.4rem;
+    }
+
+    .profileTrigger {
+        width: 4.4rem;
+        height: 4.4rem;
+    }
+}
+
+@media (hover: none) {
+    .avatarEditButton {
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .profileTrigger,
+    .menu,
+    .profileDialog {
+        animation: none;
+        transition: none;
+    }
 }

@@ -11,7 +11,12 @@ function getInitialState() {
     if (!token || !storedUser) return initialStates;
 
     try {
-        return { user: JSON.parse(storedUser), isAuthenticated: true };
+        const user = JSON.parse(storedUser);
+        if (user.avatar === "https://i.pravatar.cc/100?u=zz") {
+            delete user.avatar;
+            localStorage.setItem("user", JSON.stringify(user));
+        }
+        return { user, isAuthenticated: true };
     } catch {
         localStorage.removeItem("jwt");
         localStorage.removeItem("user");
@@ -23,6 +28,8 @@ function reducer(state, action) {
     switch (action.type) {
         case "login":
             return { ...state, user: action.payload, isAuthenticated: true };
+        case "profile/update":
+            return { ...state, user: action.payload };
         case "logout":
             return { ...state, user: {}, isAuthenticated: false };
         default:
@@ -37,12 +44,19 @@ function AuthProvider({ children }) {
     function login(user, token) {
         const sessionUser = {
             name: user.name,
-            avatar: "https://i.pravatar.cc/100?u=zz",
+            email: user.email,
+            avatar: user.avatar,
         };
         localStorage.setItem("jwt", token);
         localStorage.setItem("user", JSON.stringify(sessionUser));
 
         dispatch({ type: "login", payload: sessionUser });
+    }
+
+    function updateProfile(profile) {
+        const updatedUser = { ...state.user, ...profile };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        dispatch({ type: "profile/update", payload: updatedUser });
     }
 
     function logout() {
@@ -52,7 +66,9 @@ function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ login, logout, user, isAuthenticated }}>
+        <AuthContext.Provider
+            value={{ login, logout, updateProfile, user, isAuthenticated }}
+        >
             {children}
         </AuthContext.Provider>
     );

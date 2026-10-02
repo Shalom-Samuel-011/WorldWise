@@ -25,10 +25,34 @@ function uploadMemory(file, userId, cityId) {
     });
 }
 
+function uploadProfileImage(file, userId) {
+    return new Promise((resolve, reject) => {
+        const upload = cloudinary.uploader.upload_stream(
+            {
+                folder: `worldwise/${userId}/profile`,
+                resource_type: "image",
+                use_filename: true,
+                unique_filename: true,
+            },
+            (error, result) => {
+                if (error) return reject(error);
+                resolve(result);
+            },
+        );
+
+        upload.end(file.buffer);
+    });
+}
+
 function deleteMemory(publicId, resourceType) {
     return cloudinary.uploader.destroy(publicId, {
         resource_type: resourceType,
     });
 }
 
-module.exports = { cloudinary, uploadMemory, deleteMemory };
+module.exports = {
+    cloudinary,
+    uploadMemory,
+    uploadProfileImage,
+    deleteMemory,
+};

@@ -16,6 +16,7 @@ import Form from "./components/Form";
 import SpinnerFullPage from "./components/SpinnerFullPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import Signup from "./Pages/Signup";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const Product = lazy(() => import("./Pages/Product"));
 const Pricing = lazy(() => import("./Pages/Pricing"));
@@ -26,7 +27,7 @@ const Login = lazy(() => import("./Pages/Login"));
 const ProtectedRoute = lazy(() => import("./Pages/ProtectedRoute"));
 
 export default function App() {
-    return (
+    const application = (
         <>
             <AuthProvider>
                 <BrowserRouter>
@@ -65,5 +66,14 @@ export default function App() {
                 </BrowserRouter>
             </AuthProvider>
         </>
+    );
+
+    const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    return googleClientId ? (
+        <GoogleOAuthProvider clientId={googleClientId}>
+            {application}
+        </GoogleOAuthProvider>
+    ) : (
+        application
     );
 }
