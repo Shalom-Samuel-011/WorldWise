@@ -72,6 +72,7 @@ export default function Map() {
                         scrollWheelZoom={true}
                         className={styles.map}
                     >
+                        <ResizeMap />
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
@@ -114,6 +115,32 @@ export default function Map() {
             )}
         </div>
     );
+}
+
+function ResizeMap() {
+    const map = useMap();
+
+    useEffect(
+        function () {
+            const container = map.getContainer();
+            let animationFrame;
+            const observer = new ResizeObserver(() => {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = requestAnimationFrame(() =>
+                    map.invalidateSize({ pan: false }),
+                );
+            });
+
+            observer.observe(container);
+            return () => {
+                observer.disconnect();
+                cancelAnimationFrame(animationFrame);
+            };
+        },
+        [map],
+    );
+
+    return null;
 }
 
 function ChangeCenter({ setMapPosition, cities }) {

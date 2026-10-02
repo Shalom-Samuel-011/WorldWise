@@ -5,3 +5,51 @@
     display: flex;
     position: relative;
 }
+
+.resizeHandle {
+    position: absolute;
+    z-index: 1001;
+    top: 50%;
+    left: calc(2.4rem + var(--sidebar-width, 56rem));
+    width: 2.8rem;
+    height: 6rem;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 0.4rem;
+    background: var(--color-dark--2);
+    color: var(--color-light--1);
+    cursor: col-resize;
+    touch-action: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.resizeHandle:hover,
+.resizeHandle:focus-visible,
+.resizing .resizeHandle {
+    opacity: 1;
+}
+
+.resizeHandle:focus-visible {
+    outline: 2px solid var(--color-brand--2);
+    outline-offset: 2px;
+}
+
+.resizeGrip {
+    width: 0.8rem;
+    height: 3.2rem;
+    background-image: radial-gradient(
+        circle,
+        currentColor 1px,
+        transparent 1.5px
+    );
+    background-size: 0.4rem 0.8rem;
+    background-position: center;
+}
+
+.resizing {
+    cursor: col-resize;
+    user-select: none;
+}
