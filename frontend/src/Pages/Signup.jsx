@@ -5,6 +5,7 @@ import PageNav from "../components/PageNav";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
+import GoogleSignIn from "../components/GoogleSignIn";
 
 export default function Signup() {
     // PRE-FILL FOR DEV PURPOSES
@@ -115,6 +116,12 @@ export default function Signup() {
                         Log in
                     </Button>
                 </div>
+                <div className={styles.oauthDivider}>
+                    <span>OR</span>
+                </div>
+                <GoogleSignIn
+                    onAuthSuccess={({ user, token }) => login(user, token)}
+                />
             </form>
         </main>
     );

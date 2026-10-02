@@ -11,6 +11,7 @@
         "server": "json-server --watch data/cities.json --port 8000"
     },
     "dependencies": {
+        "@react-oauth/google": "^0.13.5",
         "json-server": "^1.0.0-beta.3",
         "leaflet": "^1.9.4",
         "react": "^18.2.0",

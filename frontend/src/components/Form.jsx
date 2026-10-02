@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Button from "./Button";
 import Emoji from "./Emoji";
 import styles from "./Form.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import useUrlPosition from "../hooks/useUrlPosition";
 import Spinner from "./Spinner";
 import useCities from "../hooks/useCities";
@@ -22,8 +22,12 @@ function convertToEmoji(countryCode) {
 }
 
 function Form() {
-    const [cityName, setCityName] = useState("");
-    const [country, setCountry] = useState("");
+    const [searchParams] = useSearchParams();
+    const searchedCityName = searchParams.get("cityName") || "";
+    const searchedCountry = searchParams.get("country") || "";
+    const searchedCountryCode = searchParams.get("countryCode") || "";
+    const [cityName, setCityName] = useState(searchedCityName);
+    const [country, setCountry] = useState(searchedCountry);
     const [date, setDate] = useState(new Date());
     const [notes, setNotes] = useState("");
     const [isLoadingGeocoding, setIsLoadingGeocoding] = useState(false);
@@ -54,6 +58,14 @@ function Form() {
 
     useEffect(
         function () {
+            if (searchedCityName) setCityName(searchedCityName);
+            if (searchedCountry) setCountry(searchedCountry);
+            if (searchedCountryCode)
+                setEmoji(convertToEmoji(searchedCountryCode));
+
+            if (searchedCityName && searchedCountry && searchedCountryCode)
+                return;
+
             async function fetchCityData() {
                 try {
                     setGeocodingError("");
@@ -68,9 +80,13 @@ function Form() {
                         throw new Error(
                             "This is not a city, Try somewhere else!",
                         );
-                    setCityName(data.city || data.locality);
-                    setCountry(data.countryName);
-                    setEmoji(convertToEmoji(data.countryCode));
+                    setCityName(searchedCityName || data.city || data.locality);
+                    setCountry(searchedCountry || data.countryName);
+                    setEmoji(
+                        searchedCountryCode
+                            ? convertToEmoji(searchedCountryCode)
+                            : convertToEmoji(data.countryCode),
+                    );
                 } catch (err) {
                     setGeocodingError(err.message);
                 } finally {
@@ -79,7 +95,7 @@ function Form() {
             }
             fetchCityData();
         },
-        [lat, lng],
+        [lat, lng, searchedCityName, searchedCountry, searchedCountryCode],
     );
 
     if (isLoadingGeocoding) return <Spinner />;

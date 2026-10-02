@@ -6,6 +6,7 @@ import Spinner from "../components/Spinner";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
+import GoogleSignIn from "../components/GoogleSignIn";
 
 export default function Login() {
     // PRE-FILL FOR DEV PURPOSES
@@ -97,6 +98,14 @@ export default function Login() {
                                 Sign up
                             </Button>
                         </div>
+                        <div className={styles.oauthDivider}>
+                            <span>OR</span>
+                        </div>
+                        <GoogleSignIn
+                            onAuthSuccess={({ user, token }) =>
+                                login(user, token)
+                            }
+                        />
                     </>
                 )}
             </form>
