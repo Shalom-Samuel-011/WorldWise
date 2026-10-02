@@ -12,6 +12,7 @@ function CountryList() {
             seen.add(city.country);
             return [...arr, { countryName: city.country, emoji: city.emoji }];
         }
+        return arr;
     }, []);
 
     if (loading) return <Spinner />;

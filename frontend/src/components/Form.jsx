@@ -6,6 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import Button from "./Button";
+import Emoji from "./Emoji";
 import styles from "./Form.module.css";
 import { useNavigate } from "react-router-dom";
 import useUrlPosition from "../hooks/useUrlPosition";
@@ -31,23 +32,24 @@ function Form() {
 
     const navigate = useNavigate();
     const [lat, lng] = useUrlPosition();
-    const { handleAddCity, loading } = useCities();
+    const { handleAddCity, loading, error } = useCities();
 
     async function handleSubmit(e) {
         e.preventDefault();
-        if (!date || !cityName) return;
+        if (loading || !date || !cityName || !country || !emoji) return;
         const newCity = {
             cityName,
             country,
             emoji,
             date,
             notes,
-            position: { lat, lng },
+            position: {
+                type: "Point",
+                coordinates: [lng, lat],
+            },
         };
-        console.log("Add button clicked!");
-        console.log(newCity);
-        handleAddCity(newCity);
-        navigate("/app/cities");
+        const createdCity = await handleAddCity(newCity);
+        if (createdCity) navigate("/app/cities");
     }
 
     useEffect(
@@ -84,7 +86,10 @@ function Form() {
     if (geocodingError) return <h2>{geocodingError}</h2>;
 
     return (
-        <form className={`${styles.form} ${loading ? styles.loading : ""}`}>
+        <form
+            className={`${styles.form} ${loading ? styles.loading : ""}`}
+            onSubmit={handleSubmit}
+        >
             <div className={styles.row}>
                 <label htmlFor="cityName">City name</label>
                 <input
@@ -92,7 +97,7 @@ function Form() {
                     onChange={(e) => setCityName(e.target.value)}
                     value={cityName}
                 />
-                <span className={styles.flag}>{emoji}</span>
+                <Emoji emoji={emoji} alt={country} className={styles.flag} />
             </div>
 
             <div className={styles.row}>
@@ -117,7 +122,7 @@ function Form() {
             </div>
 
             <div className={styles.buttons}>
-                <Button type="primary" onClick={handleSubmit}>
+                <Button type="primary" htmlType="submit" disabled={loading}>
                     Add
                 </Button>
                 <Button
@@ -130,6 +135,7 @@ function Form() {
                     Back
                 </Button>
             </div>
+            {error && <p role="alert">{error}</p>}
         </form>
     );
 }

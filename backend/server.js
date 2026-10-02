@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
 const app = require("./app");
-const citiesModel = require("./models/citiesModel");
 
 const dbString = process.env.DB_URL.replace(
     "<db_password>",
@@ -16,8 +15,7 @@ const port = process.env.PORT;
 
 mongoose
     .connect(dbString)
-    .then(async () => {
-        await citiesModel.seedTempData();
+    .then(() => {
         console.log("Database connection successful");
 
         const server = app.listen(port, () => {

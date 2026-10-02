@@ -18,3 +18,5 @@ Frontend: React, Context API, Leaflet API, CSS / Tailwind CSS
 Backend: Node.js, Express.js (v5), JWT, google-auth-library
 
 Database: MongoDB & Mongoose ORM (2dsphere indexing)
+
+Emoji artwork: [Twemoji](https://github.com/twitter/twemoji), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

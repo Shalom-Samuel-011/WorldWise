@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 
 import styles from "./City.module.css";
 import Button from "./Button";
+import Emoji from "./Emoji";
 import useCities from "../hooks/useCities";
 
 const formatDate = (date) =>
@@ -24,7 +25,12 @@ function City() {
             <div className={styles.row}>
                 <h6>City name</h6>
                 <h3>
-                    <span>{emoji}</span> {cityName}
+                    <Emoji
+                        emoji={emoji}
+                        alt={cityName}
+                        className={styles.emoji}
+                    />
+                    {cityName}
                 </h3>
             </div>
 

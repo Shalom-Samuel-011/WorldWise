@@ -10,8 +10,8 @@ export default function CityList() {
         return <h2>👋 Add your first city by clicking on a city on the map</h2>;
     return (
         <ul className={styles.cityList}>
-            {cities.map((city) => (
-                <CityItem city={city} key={city.id} />
+            {cities.map((city, i) => (
+                <CityItem city={city} key={i} />
             ))}
         </ul>
     );

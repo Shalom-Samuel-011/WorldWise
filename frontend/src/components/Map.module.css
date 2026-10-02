@@ -24,9 +24,9 @@
     gap: 1rem;
 }
 
-:global(.leaflet-popup .leaflet-popup-content span:first-child) {
-    font-size: 2.5rem;
-    line-height: 1;
+.popupEmoji {
+    width: 2.5rem;
+    height: 2.5rem;
 }
 
 :global(.leaflet-popup .leaflet-popup-tip) {

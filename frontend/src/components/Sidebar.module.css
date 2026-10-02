@@ -9,6 +9,13 @@
     height: calc(100vh - 4.8rem);
 }
 
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        z-index: 1000;
+    }
+}
+
 .footer {
     margin-top: auto;
 }

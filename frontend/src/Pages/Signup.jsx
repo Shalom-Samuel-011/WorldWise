@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import PageNav from "../components/PageNav";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../api";
 
 export default function Signup() {
     // PRE-FILL FOR DEV PURPOSES
@@ -25,19 +26,17 @@ export default function Signup() {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const response = await fetch(
-                "http://127.0.0.1:8000/api/v1/users/signup",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        password,
-                        confirmPassword,
-                    }),
-                },
-            );
+            const response = await fetch(`${API_BASE_URL}/users/signup`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                    confirmPassword,
+                }),
+                credentials: "include",
+            });
 
             const data = await response.json();
             console.log(data);
@@ -109,7 +108,9 @@ export default function Signup() {
                 {message && <h2>{message}</h2>}
 
                 <div className={styles.buttons}>
-                    <Button type="primary">Sign up</Button>
+                    <Button type="primary" htmlType="submit">
+                        Sign up
+                    </Button>
                     <Button type="secondary" onClick={handleClickLogin}>
                         Log in
                     </Button>
