@@ -1,5 +1,18 @@
 const citiesModel = require("../models/citiesModel");
 const appError = require("../utils/appError");
+const { uploadMemory, deleteMemory } = require("../utils/cloudinary");
+
+function ensureCloudinaryConfigured(next) {
+    const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
+        process.env;
+
+    if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_API_KEY && CLOUDINARY_API_SECRET) {
+        return true;
+    }
+
+    next(new appError("Memory uploads are not configured on the server", 503));
+    return false;
+}
 
 exports.getCities = async function (req, res) {
     console.log(req.user);
@@ -35,18 +48,81 @@ exports.addCity = async function (req, res) {
 };
 
 exports.deleteCity = async function (req, res, next) {
-    const deletedCity = await citiesModel.findOneAndDelete({
+    const city = await citiesModel.findOne({
         _id: req.params.id,
         user: req.user._id,
     });
 
-    if (!deletedCity) {
-        return next(new appError("City not found", 404));
-    }
+    if (!city) return next(new appError("City not found", 404));
+
+    if (city.memories.length && !ensureCloudinaryConfigured(next)) return;
+    await Promise.all(
+        city.memories.map((memory) =>
+            deleteMemory(memory.publicId, memory.resourceType),
+        ),
+    );
+    await city.deleteOne();
 
     res.status(200).json({
         status: "success",
         message: "deleted",
-        data: deletedCity,
+        data: city,
     });
+};
+
+exports.addMemory = async function (req, res, next) {
+    if (!req.file) return next(new appError("Choose an image or video", 400));
+    if (!ensureCloudinaryConfigured(next)) return;
+
+    const city = await citiesModel.findOne({
+        _id: req.params.id,
+        user: req.user._id,
+    });
+
+    if (!city) return next(new appError("City not found", 404));
+
+    const asset = await uploadMemory(req.file, req.user._id, city._id);
+    const memory = {
+        publicId: asset.public_id,
+        url: asset.secure_url,
+        resourceType: asset.resource_type,
+        format: asset.format,
+        originalName: req.file.originalname,
+        bytes: asset.bytes,
+    };
+
+    try {
+        city.memories.push(memory);
+        await city.save();
+    } catch (error) {
+        await deleteMemory(asset.public_id, asset.resource_type).catch(
+            () => {},
+        );
+        return next(error);
+    }
+
+    res.status(201).json({
+        status: "success",
+        data: city.memories[city.memories.length - 1],
+    });
+};
+
+exports.deleteMemory = async function (req, res, next) {
+    if (!ensureCloudinaryConfigured(next)) return;
+
+    const city = await citiesModel.findOne({
+        _id: req.params.id,
+        user: req.user._id,
+    });
+
+    if (!city) return next(new appError("City not found", 404));
+
+    const memory = city.memories.id(req.params.memoryId);
+    if (!memory) return next(new appError("Memory not found", 404));
+
+    await deleteMemory(memory.publicId, memory.resourceType);
+    memory.deleteOne();
+    await city.save();
+
+    res.status(200).json({ status: "success", message: "Memory deleted" });
 };

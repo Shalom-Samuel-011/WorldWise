@@ -7,6 +7,7 @@ const CitiesContext = createContext();
 const initialStates = {
     cities: [],
     loading: false,
+    loaded: false,
     currentCity: {},
     error: "",
 };
@@ -27,7 +28,12 @@ function normalizeCity(city) {
 function reducer(state, action) {
     switch (action.type) {
         case "cities/loaded":
-            return { ...state, cities: action.payload, loading: false };
+            return {
+                ...state,
+                cities: action.payload,
+                loading: false,
+                loaded: true,
+            };
         case "city/add": {
             return {
                 ...state,
@@ -52,11 +58,47 @@ function reducer(state, action) {
             };
         case "city/selected":
             return { ...state, currentCity: action.payload };
+        case "memory/added": {
+            const { cityId, memory } = action.payload;
+            const addToCity = (city) =>
+                city?.id === cityId
+                    ? { ...city, memories: [...(city.memories || []), memory] }
+                    : city;
+
+            return {
+                ...state,
+                cities: state.cities.map(addToCity),
+                currentCity: addToCity(state.currentCity),
+            };
+        }
+        case "memory/deleted": {
+            const { cityId, memoryId } = action.payload;
+            const removeFromCity = (city) =>
+                city?.id === cityId
+                    ? {
+                          ...city,
+                          memories: (city.memories || []).filter(
+                              (memory) => String(memory._id) !== memoryId,
+                          ),
+                      }
+                    : city;
+
+            return {
+                ...state,
+                cities: state.cities.map(removeFromCity),
+                currentCity: removeFromCity(state.currentCity),
+            };
+        }
         case "loading": {
             return { ...state, loading: true, error: "" };
         }
         case "error":
-            return { ...state, error: action.payload, loading: false };
+            return {
+                ...state,
+                error: action.payload,
+                loading: false,
+                loaded: true,
+            };
         default:
             throw new Error("Unknown action type");
     }
@@ -127,6 +169,45 @@ function CitiesProvider({ children }) {
         }
     }
 
+    async function handleAddMemory(cityId, file) {
+        const formData = new FormData();
+        formData.append("memory", file);
+
+        const res = await fetch(`${API_BASE_URL}/cities/${cityId}/memories`, {
+            method: "POST",
+            headers: getAuthHeaders(),
+            body: formData,
+            credentials: "include",
+        });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message || "Could not upload memory");
+
+        dispatch({
+            type: "memory/added",
+            payload: { cityId, memory: data.data },
+        });
+    }
+
+    async function handleRemoveMemory(cityId, memoryId) {
+        const res = await fetch(
+            `${API_BASE_URL}/cities/${cityId}/memories/${memoryId}`,
+            {
+                method: "DELETE",
+                headers: getAuthHeaders(),
+                credentials: "include",
+            },
+        );
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message || "Could not delete memory");
+
+        dispatch({
+            type: "memory/deleted",
+            payload: { cityId, memoryId },
+        });
+    }
+
     useEffect(
         function () {
             if (!isAuthenticated) return;
@@ -165,8 +246,11 @@ function CitiesProvider({ children }) {
                 cities,
                 loading,
                 error: state.error,
+                loaded: state.loaded,
                 handleRemoveCity,
                 handleAddCity,
+                handleAddMemory,
+                handleRemoveMemory,
                 currentCity,
                 dispatch,
             }}
