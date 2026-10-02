@@ -1,0 +1,167 @@
+.searchControl {
+    position: absolute;
+    z-index: 1100;
+    top: 1.6rem;
+    left: 50%;
+    width: min(44rem, calc(100% - 10rem));
+    transform: translateX(-50%);
+}
+
+.searchForm {
+    display: flex;
+    width: 100%;
+    height: 4.8rem;
+    overflow: hidden;
+    border: 1px solid rgba(236, 236, 236, 0.2);
+    border-radius: 6px;
+    background: var(--color-dark--1);
+    box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.3);
+}
+
+.searchForm:focus-within {
+    border-color: var(--color-brand--2);
+    box-shadow:
+        0 0 0 2px rgba(0, 196, 106, 0.18),
+        0 0.6rem 2rem rgba(0, 0, 0, 0.3);
+}
+
+.searchForm input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    border-radius: 0;
+    padding: 0 1.4rem;
+    background: transparent;
+    color: var(--color-light--2);
+    font-size: 1.4rem;
+}
+
+.searchForm input::placeholder {
+    color: var(--color-light--1);
+}
+
+.searchForm input:focus {
+    background: transparent;
+}
+
+.searchForm input::-webkit-search-cancel-button {
+    cursor: pointer;
+}
+
+.searchForm button {
+    flex: 0 0 4.8rem;
+    display: grid;
+    place-items: center;
+    border: 0;
+    background: var(--color-brand--2);
+    color: var(--color-dark--1);
+    cursor: pointer;
+}
+
+.searchForm button:hover,
+.searchForm button:focus-visible {
+    filter: brightness(1.08);
+    outline: none;
+}
+
+.searchForm button:disabled {
+    cursor: wait;
+}
+
+.searchForm svg {
+    width: 2rem;
+    height: 2rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 2;
+}
+
+.spinner {
+    width: 1.8rem;
+    height: 1.8rem;
+    border: 2px solid rgba(45, 52, 57, 0.35);
+    border-top-color: var(--color-dark--1);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+.results {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    left: 0;
+    max-height: min(34rem, 55vh);
+    overflow-y: auto;
+    list-style: none;
+    border: 1px solid rgba(236, 236, 236, 0.12);
+    border-radius: 6px;
+    background: var(--color-dark--1);
+    box-shadow: 0 1rem 2.8rem rgba(0, 0, 0, 0.4);
+}
+
+.results button {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.2rem;
+    border: 0;
+    border-bottom: 1px solid rgba(236, 236, 236, 0.08);
+    padding: 1rem 1.2rem;
+    background: transparent;
+    color: var(--color-light--2);
+    text-align: left;
+    cursor: pointer;
+}
+
+.results li:last-child button {
+    border-bottom: 0;
+}
+
+.results button:hover,
+.results button:focus-visible {
+    background: var(--color-dark--2);
+    outline: none;
+}
+
+.results strong {
+    font-size: 1.4rem;
+}
+
+.results span {
+    width: 100%;
+    overflow: hidden;
+    color: var(--color-light--1);
+    font-size: 1.2rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status {
+    margin: 0.6rem 0 0;
+    border-radius: 4px;
+    padding: 0.7rem 1rem;
+    background: var(--color-dark--1);
+    color: var(--color-light--2);
+    font-size: 1.2rem;
+    box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.22);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 600px) {
+    .searchControl {
+        top: 1.2rem;
+        width: calc(100% - 8rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 1.6s;
+    }
+}

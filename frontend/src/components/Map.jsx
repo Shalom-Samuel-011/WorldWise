@@ -17,8 +17,10 @@ import Button from "./Button";
 import Emoji from "./Emoji";
 import useUrlPosition from "../hooks/useUrlPosition";
 import User from "./User";
+import LocationSearch from "./LocationSearch";
 
 export default function Map() {
+    const navigate = useNavigate();
     const { cities, loading } = useCities();
     const {
         isLoading: isLoadingPosition,
@@ -31,6 +33,7 @@ export default function Map() {
             ? [cities[0].position.lat, cities[0].position.lng]
             : [40, 0],
     );
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
     const onUserPosition =
         geolocationPosition &&
@@ -55,6 +58,37 @@ export default function Map() {
             ) : (
                 <>
                     <User />
+                    <LocationSearch
+                        onSelect={(place) => {
+                            setSelectedPlace(place);
+                            setMapPosition([place.lat, place.lon]);
+
+                            const address = place.address || {};
+                            const cityName =
+                                address.city ||
+                                address.town ||
+                                address.village ||
+                                address.municipality ||
+                                address.hamlet ||
+                                place.name ||
+                                place.display_name.split(",")[0];
+                            const params = new URLSearchParams({
+                                lat: String(place.lat),
+                                lng: String(place.lon),
+                                cityName,
+                            });
+
+                            if (address.country)
+                                params.set("country", address.country);
+                            if (address.country_code)
+                                params.set(
+                                    "countryCode",
+                                    address.country_code.toUpperCase(),
+                                );
+
+                            navigate(`form?${params.toString()}`);
+                        }}
+                    />
                     {!onUserPosition && (
                         <Button
                             type="position"
@@ -73,6 +107,7 @@ export default function Map() {
                         className={styles.map}
                     >
                         <ResizeMap />
+                        <FlyToPlace place={selectedPlace} />
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
@@ -104,6 +139,16 @@ export default function Map() {
                         {geolocationPosition && (
                             <Marker position={geolocationPosition}></Marker>
                         )}
+                        {selectedPlace && (
+                            <Marker
+                                position={[
+                                    selectedPlace.lat,
+                                    selectedPlace.lon,
+                                ]}
+                            >
+                                <Popup>{selectedPlace.display_name}</Popup>
+                            </Marker>
+                        )}
                         <ChangeCenter
                             setMapPosition={setMapPosition}
                             cities={cities}
@@ -115,6 +160,22 @@ export default function Map() {
             )}
         </div>
     );
+}
+
+function FlyToPlace({ place }) {
+    const map = useMap();
+
+    useEffect(
+        function () {
+            if (!place) return;
+            map.flyTo([place.lat, place.lon], Math.max(map.getZoom(), 12), {
+                duration: 1.1,
+            });
+        },
+        [map, place],
+    );
+
+    return null;
 }
 
 function ResizeMap() {
