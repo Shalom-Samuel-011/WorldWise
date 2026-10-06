@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
     MapContainer,
     TileLayer,
@@ -7,6 +7,7 @@ import {
     useMap,
     useMapEvents,
 } from "react-leaflet";
+import { divIcon } from "leaflet";
 import { useEffect, useRef, useState } from "react";
 
 import styles from "./Map.module.css";
@@ -19,13 +20,24 @@ import useUrlPosition from "../hooks/useUrlPosition";
 import User from "./User";
 import LocationSearch from "./LocationSearch";
 
+const draftLocationIcon = divIcon({
+    className: styles.draftMarker,
+    html: `<span class="${styles.draftMarkerHalo}"></span><span class="${styles.draftMarkerCore}"></span>`,
+    iconSize: [44, 44],
+    iconAnchor: [22, 22],
+});
+
 export default function Map() {
     const navigate = useNavigate();
-    const { cities, loading } = useCities();
+    const location = useLocation();
+    const [draftLat, draftLng] = useUrlPosition();
+    const { cities, loading, dispatch } = useCities();
+    const formOpenedForPosition = useRef(null);
     const {
         isLoading: isLoadingPosition,
         position: geolocationPosition,
         getPosition,
+        clearPosition,
     } = useGeolocation();
 
     const [mapPosition, setMapPosition] = useState(
@@ -34,6 +46,11 @@ export default function Map() {
             : [40, 0],
     );
     const [selectedPlace, setSelectedPlace] = useState(null);
+    const isAddingLocation =
+        location.pathname === "/app/form" &&
+        Number.isFinite(draftLat) &&
+        Number.isFinite(draftLng);
+    const draftPosition = isAddingLocation ? [draftLat, draftLng] : null;
 
     const onUserPosition =
         geolocationPosition &&
@@ -42,13 +59,34 @@ export default function Map() {
 
     useEffect(
         function () {
-            if (geolocationPosition)
-                setMapPosition([
-                    geolocationPosition.lat,
-                    geolocationPosition.lng,
-                ]);
+            if (!geolocationPosition) return;
+
+            setMapPosition([
+                geolocationPosition.lat,
+                geolocationPosition.lng,
+            ]);
+            if (formOpenedForPosition.current === geolocationPosition) return;
+
+            formOpenedForPosition.current = geolocationPosition;
+            const params = new URLSearchParams({
+                lat: String(geolocationPosition.lat),
+                lng: String(geolocationPosition.lng),
+            });
+            navigate(`form?${params.toString()}`, {
+                state: { source: "geolocation" },
+            });
         },
-        [geolocationPosition],
+        [geolocationPosition, navigate],
+    );
+
+    useEffect(
+        function () {
+            if (!location.state?.clearGeolocation) return;
+
+            clearPosition();
+            navigate(location.pathname, { replace: true, state: null });
+        },
+        [clearPosition, location.pathname, location.state, navigate],
     );
 
     return (
@@ -125,6 +163,17 @@ export default function Map() {
                                         city.position.lng,
                                     ]}
                                     key={city.id}
+                                    eventHandlers={{
+                                        click: () => {
+                                            dispatch({
+                                                type: "city/selected",
+                                                payload: city,
+                                            });
+                                            navigate(
+                                                `cities/${city.id}?lat=${city.position.lat}&lng=${city.position.lng}`,
+                                            );
+                                        },
+                                    }}
                                 >
                                     <Popup>
                                         <Emoji
@@ -136,10 +185,10 @@ export default function Map() {
                                     </Popup>
                                 </Marker>
                             ))}
-                        {geolocationPosition && (
+                        {geolocationPosition && !draftPosition && (
                             <Marker position={geolocationPosition}></Marker>
                         )}
-                        {selectedPlace && (
+                        {selectedPlace && !draftPosition && (
                             <Marker
                                 position={[
                                     selectedPlace.lat,
@@ -148,6 +197,15 @@ export default function Map() {
                             >
                                 <Popup>{selectedPlace.display_name}</Popup>
                             </Marker>
+                        )}
+                        {draftPosition && (
+                            <Marker
+                                position={draftPosition}
+                                icon={draftLocationIcon}
+                                title="Location to add"
+                                interactive={false}
+                                keyboard={false}
+                            />
                         )}
                         <ChangeCenter
                             setMapPosition={setMapPosition}

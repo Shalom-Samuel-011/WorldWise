@@ -25,6 +25,24 @@
     gap: 0.5rem;
 }
 
+.formLink {
+    align-self: flex-start;
+    margin-top: -1rem;
+    color: var(--color-brand--2);
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.formLink:hover,
+.formLink:focus-visible {
+    color: var(--color-light--2);
+}
+
+.formMessage {
+    font-size: 1.5rem;
+    overflow-wrap: anywhere;
+}
+
 .buttons {
     display: flex;
     justify-content: space-between;

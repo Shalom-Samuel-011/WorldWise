@@ -1,4 +1,5 @@
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
+import { API_BASE_URL, getAuthHeaders } from "../api";
 
 const AuthContext = createContext();
 
@@ -45,7 +46,9 @@ function AuthProvider({ children }) {
         const sessionUser = {
             name: user.name,
             email: user.email,
+            phoneNumber: user.phoneNumber,
             avatar: user.avatar,
+            hasPassword: user.hasPassword !== false,
         };
         localStorage.setItem("jwt", token);
         localStorage.setItem("user", JSON.stringify(sessionUser));
@@ -64,6 +67,33 @@ function AuthProvider({ children }) {
         localStorage.removeItem("jwt");
         localStorage.removeItem("user");
     }
+
+    useEffect(() => {
+        if (!isAuthenticated) return undefined;
+
+        const controller = new AbortController();
+        fetch(`${API_BASE_URL}/users/profile`, {
+            headers: getAuthHeaders(),
+            signal: controller.signal,
+        })
+            .then(async (response) => {
+                const data = await response.json();
+                if (!response.ok)
+                    throw new Error(
+                        data.message || "Could not refresh profile",
+                    );
+
+                const refreshedUser = {
+                    ...data.user,
+                    hasPassword: data.user.hasPassword !== false,
+                };
+                localStorage.setItem("user", JSON.stringify(refreshedUser));
+                dispatch({ type: "profile/update", payload: refreshedUser });
+            })
+            .catch(() => {});
+
+        return () => controller.abort();
+    }, [isAuthenticated]);
 
     return (
         <AuthContext.Provider

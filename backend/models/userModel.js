@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     name: {
         type: "String",
         required: [true, "A user must have a name"],
+        trim: true,
     },
     email: {
         type: "String",
@@ -14,6 +15,7 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         unique: true,
     },
+    phoneNumber: { type: String, trim: true, default: "" },
     password: {
         type: "String",
         required: [true, "A user must have a password"],
@@ -35,9 +37,17 @@ const userSchema = new mongoose.Schema({
         default: "user",
     },
     passwordChangedAt: Date,
+    passwordResetToken: { type: String, select: false },
+    passwordResetExpires: { type: Date, select: false },
     avatar: String,
     avatarPublicId: String,
     googleId: { type: String, unique: true, sparse: true },
+    hasPassword: {
+        type: Boolean,
+        default: function () {
+            return !this.googleId;
+        },
+    },
 });
 
 userSchema.methods.comparePasswords = async function (payload) {
@@ -49,7 +59,7 @@ userSchema.methods.passwordChanged = function (JWTTimeStamp) {
         return false;
     }
 
-    const time = this.passwordChangedAt.getTime() / 1000;
+    const time = Math.floor(this.passwordChangedAt.getTime() / 1000);
     return time > JWTTimeStamp;
 };
 
