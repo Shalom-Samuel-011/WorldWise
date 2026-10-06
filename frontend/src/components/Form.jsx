@@ -8,7 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Button from "./Button";
 import Emoji from "./Emoji";
 import styles from "./Form.module.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import useUrlPosition from "../hooks/useUrlPosition";
 import Spinner from "./Spinner";
 import useCities from "../hooks/useCities";
@@ -35,6 +35,7 @@ function Form() {
     const [geocodingError, setGeocodingError] = useState("");
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [lat, lng] = useUrlPosition();
     const { handleAddCity, loading, error } = useCities();
 
@@ -143,10 +144,16 @@ function Form() {
                 </Button>
                 <Button
                     type="back"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        navigate("/app/cities");
-                    }}
+                    htmlType="button"
+                    onClick={() =>
+                        navigate("/app/cities", {
+                            replace: true,
+                            state: {
+                                clearGeolocation:
+                                    location.state?.source === "geolocation",
+                            },
+                        })
+                    }
                 >
                     Back
                 </Button>

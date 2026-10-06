@@ -24,6 +24,8 @@ const Homepage = lazy(() => import("./Pages/Homepage"));
 const PageNotFound = lazy(() => import("./Pages/PageNotFound"));
 const AppLayout = lazy(() => import("./Pages/AppLayout"));
 const Login = lazy(() => import("./Pages/Login"));
+const ForgotPassword = lazy(() => import("./Pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./Pages/ResetPassword"));
 const ProtectedRoute = lazy(() => import("./Pages/ProtectedRoute"));
 
 export default function App() {
@@ -59,6 +61,14 @@ export default function App() {
                             </Route>
 
                             <Route path="login" element={<Login />} />
+                            <Route
+                                path="forgot-password"
+                                element={<ForgotPassword />}
+                            />
+                            <Route
+                                path="reset-password/:token"
+                                element={<ResetPassword />}
+                            />
                             <Route path="signup" element={<Signup />} />
                             <Route path="*" element={<PageNotFound />} />
                         </Routes>

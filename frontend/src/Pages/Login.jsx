@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import styles from "./Login.module.css";
 import Button from "../components/Button";
 import PageNav from "../components/PageNav";
@@ -7,6 +8,7 @@ import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
 import GoogleSignIn from "../components/GoogleSignIn";
+import PasswordInput from "../components/PasswordInput";
 
 export default function Login() {
     // PRE-FILL FOR DEV PURPOSES
@@ -78,14 +80,20 @@ export default function Login() {
 
                         <div className={styles.row}>
                             <label htmlFor="password">Password</label>
-                            <input
-                                type="password"
+                            <PasswordInput
                                 id="password"
                                 onChange={(e) => setPassword(e.target.value)}
                                 value={password}
                                 placeholder="your password"
+                                visibilityLabel="password"
                             />
                         </div>
+                        <Link
+                            className={styles.formLink}
+                            to="/forgot-password"
+                        >
+                            Forgot password?
+                        </Link>
                         <h2>{message}</h2>
                         <div className={styles.buttons}>
                             <Button type="primary" htmlType="submit">

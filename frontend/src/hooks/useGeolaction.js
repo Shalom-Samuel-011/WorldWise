@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export default function useGeolocation(defaultPosition = null) {
     const [isLoading, setIsLoading] = useState(false);
     const [position, setPosition] = useState(defaultPosition);
     const [error, setError] = useState(null);
+
+    const clearPosition = useCallback(() => {
+        setPosition(null);
+    }, []);
 
     function getPosition() {
         if (!navigator.geolocation)
@@ -25,5 +29,5 @@ export default function useGeolocation(defaultPosition = null) {
         );
     }
 
-    return { isLoading, position, error, getPosition };
+    return { isLoading, position, error, getPosition, clearPosition };
 }

@@ -9,7 +9,77 @@
     height: 100%;
 }
 
+.draftMarker {
+    border: 0;
+    background: transparent;
+}
+
+.draftMarkerHalo,
+.draftMarkerCore {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.draftMarkerHalo {
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid var(--color-brand--1);
+    box-shadow: 0 0 1.2rem rgba(255, 181, 69, 0.8);
+    animation: draftMarkerPulse 1.8s ease-out infinite;
+}
+
+.draftMarkerCore {
+    width: 1.4rem;
+    height: 1.4rem;
+    border: 3px solid var(--color-light--2);
+    background: var(--color-brand--2);
+    box-shadow:
+        0 0 0 2px var(--color-dark--1),
+        0 0.2rem 0.8rem rgba(0, 0, 0, 0.55);
+    animation: draftMarkerBreathe 1.8s ease-in-out infinite;
+}
+
+@keyframes draftMarkerPulse {
+    0% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(0.7);
+    }
+
+    75%,
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.8);
+    }
+}
+
+@keyframes draftMarkerBreathe {
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(0.92);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.08);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .draftMarkerHalo,
+    .draftMarkerCore {
+        animation: none;
+    }
+}
+
 /* Here we want to style classes that are coming from leaflet. So we want CSS Modules to give us the ACTUAL classnames, not to add some random ID to them, because then they won't match the classnames defined inside the map. The solution is to define these classes as GLOBAL */
+:global(.leaflet-div-icon).draftMarker {
+    border: 0;
+    background: transparent;
+}
+
 :global(.leaflet-popup .leaflet-popup-content-wrapper) {
     background-color: var(--color-dark--1);
     color: var(--color-light--2);

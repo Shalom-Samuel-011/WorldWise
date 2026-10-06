@@ -114,7 +114,9 @@
 
 .profileDialog {
     position: relative;
-    width: min(100%, 36rem);
+    width: min(100%, 42rem);
+    max-height: min(90vh, 76rem);
+    overflow-y: auto;
     padding: 3.2rem 2.4rem;
     border: 1px solid rgba(236, 236, 236, 0.12);
     border-radius: 8px;
@@ -159,6 +161,164 @@
     color: var(--color-light--1);
     font-size: 1.3rem;
     overflow-wrap: anywhere;
+}
+
+.profileAction {
+    min-height: 4rem;
+    margin-top: 1.8rem;
+    border: 0;
+    border-radius: 5px;
+    padding: 0.8rem 1.6rem;
+    background: var(--color-brand--2);
+    color: var(--color-dark--1);
+    font: inherit;
+    font-size: 1.4rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.profileAction:hover,
+.profileAction:focus-visible,
+.primaryAction:hover,
+.primaryAction:focus-visible {
+    filter: brightness(1.08);
+    outline: 2px solid var(--color-light--2);
+    outline-offset: 2px;
+}
+
+.profileToast {
+    position: fixed;
+    z-index: 3000;
+    bottom: 2.8rem;
+    left: 50%;
+    max-width: calc(100vw - 3.2rem);
+    transform: translateX(-50%);
+    border: 1px solid rgba(0, 196, 106, 0.55);
+    border-radius: 6px;
+    padding: 1.1rem 1.8rem;
+    background: var(--color-dark--1);
+    color: var(--color-light--2);
+    font-size: 1.4rem;
+    text-align: center;
+    box-shadow: 0 0.8rem 2.4rem rgba(0, 0, 0, 0.4);
+    animation: toastEnter 0.18s ease-out;
+}
+
+.profileForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    margin-top: 2.4rem;
+    text-align: left;
+}
+
+.profileField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--color-light--2);
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.profileField input {
+    min-height: 4.2rem;
+    border: 1px solid rgba(236, 236, 236, 0.16);
+    padding: 0.8rem 1.1rem;
+    background: var(--color-dark--2);
+    color: var(--color-light--2);
+}
+
+.profileField input.passwordInput {
+    padding-right: 4.5rem;
+}
+
+.passwordToggle {
+    color: var(--color-light--2);
+}
+
+.profileField input:focus {
+    border-color: var(--color-brand--2);
+    background: var(--color-dark--2);
+}
+
+.profileActions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.4rem;
+}
+
+.primaryAction,
+.secondaryAction {
+    min-height: 4rem;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 0.8rem 1.4rem;
+    font: inherit;
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.primaryAction {
+    background: var(--color-brand--2);
+    color: var(--color-dark--1);
+}
+
+.secondaryAction {
+    border-color: rgba(236, 236, 236, 0.2);
+    background: transparent;
+    color: var(--color-light--2);
+}
+
+.secondaryAction:hover,
+.secondaryAction:focus-visible {
+    border-color: var(--color-light--2);
+    outline: none;
+}
+
+.primaryAction:disabled,
+.secondaryAction:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+
+.passwordPrompt {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(236, 236, 236, 0.12);
+    padding-top: 1.6rem;
+    color: var(--color-light--2);
+    font-size: 1.3rem;
+    text-align: left;
+}
+
+.textAction {
+    border: 0;
+    padding: 0.6rem 0;
+    background: transparent;
+    color: var(--color-brand--2);
+    font: inherit;
+    font-size: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.textAction:hover,
+.textAction:focus-visible {
+    color: var(--color-light--2);
+    outline: none;
+    text-decoration: underline;
+}
+
+.formError {
+    margin: 0;
+    color: #ffb4b4;
+    font-size: 1.3rem;
 }
 
 .avatarEditButton {
@@ -260,6 +420,8 @@
     color: var(--color-light--2);
     font: inherit;
     font-size: 2.4rem;
+    line-height: 1;
+    padding: 0;
     cursor: pointer;
 }
 
@@ -278,6 +440,17 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes toastEnter {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 0.8rem);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
     }
 }
 
@@ -307,5 +480,9 @@
     .profileDialog {
         animation: none;
         transition: none;
+    }
+
+    .profileToast {
+        animation: none;
     }
 }

@@ -6,6 +6,7 @@ import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../api";
 import GoogleSignIn from "../components/GoogleSignIn";
+import PasswordInput from "../components/PasswordInput";
 
 export default function Signup() {
     // PRE-FILL FOR DEV PURPOSES
@@ -87,22 +88,22 @@ export default function Signup() {
 
                 <div className={styles.row}>
                     <label htmlFor="password">Password</label>
-                    <input
-                        type="password"
+                    <PasswordInput
                         id="password"
                         onChange={(e) => setPassword(e.target.value)}
                         value={password}
                         placeholder="create a password"
+                        visibilityLabel="password"
                     />
                 </div>
                 <div className={styles.row}>
-                    <label htmlFor="password">Confirm Password</label>
-                    <input
-                        type="password"
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <PasswordInput
                         id="confirmPassword"
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         value={confirmPassword}
                         placeholder="confirm your password"
+                        visibilityLabel="confirm password"
                     />
                 </div>
 
