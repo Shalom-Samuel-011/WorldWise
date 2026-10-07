@@ -181,11 +181,34 @@
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 760px) {
     .searchControl {
         top: 1.2rem;
-        width: calc(100% - 8rem);
+        right: 6.4rem;
+        left: 5.8rem;
+        width: auto;
+        transform: none;
+        animation: searchDropMobile 0.4s ease-out both;
     }
+
+    .searchForm {
+        height: 4.8rem;
+        border-radius: 1rem;
+    }
+
+    .searchForm input {
+        padding: 0 1.1rem;
+        font-size: 1.3rem;
+    }
+
+    .searchForm button {
+        flex-basis: 4.8rem;
+    }
+}
+
+@keyframes searchDropMobile {
+    from { opacity: 0; transform: translateY(-0.8rem); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {

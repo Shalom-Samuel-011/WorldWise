@@ -17,6 +17,6 @@
 
 @media (max-width: 760px) {
     .countryList {
-        max-height: 22vh;
+        max-height: min(44vh, 40rem);
     }
 }

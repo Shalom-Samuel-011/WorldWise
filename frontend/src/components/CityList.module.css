@@ -26,6 +26,6 @@
 
 @media (max-width: 760px) {
     .cityList {
-        max-height: 22vh;
+        max-height: min(44vh, 40rem);
     }
 }

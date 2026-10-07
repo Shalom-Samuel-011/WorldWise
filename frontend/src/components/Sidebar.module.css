@@ -30,15 +30,76 @@
 
 @media (max-width: 760px) {
     .sidebar {
+        position: fixed;
+        z-index: 1400;
+        right: 0;
+        bottom: 0;
+        left: 0;
         width: 100%;
         height: auto;
-        max-height: 45%;
-        min-height: 27rem;
-        flex: 1 1 45%;
-        padding: 1.8rem 2rem;
+        max-height: min(80vh, 68rem);
+        max-height: min(80dvh, 68rem);
+        min-height: 0;
+        flex: 0 0 auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        border-radius: 2rem 2rem 0 0;
+        padding: 2rem clamp(1.6rem, 5vw, 2.8rem) calc(2rem + env(safe-area-inset-bottom));
+        transform: translateY(calc(100% + 1rem));
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+            transform 0.28s cubic-bezier(0.2, 0.75, 0.25, 1),
+            visibility 0s linear 0.28s;
+    }
+
+    .sidebar.mobileOpen {
+        transform: translateY(0);
+        visibility: visible;
+        pointer-events: auto;
+        transition:
+            transform 0.28s cubic-bezier(0.2, 0.75, 0.25, 1),
+            visibility 0s;
+    }
+
+    .mobilePanelClose {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+        display: grid;
+        width: 4.2rem;
+        height: 4.2rem;
+        place-items: center;
+        border: 1px solid rgba(210, 228, 240, 0.18);
+        border-radius: 50%;
+        padding: 0;
+        background: rgba(12, 16, 20, 0.6);
+        color: var(--color-light--2);
+        font-size: 2.6rem;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+    .mobilePanelClose:hover,
+    .mobilePanelClose:focus-visible {
+        border-color: var(--color-brand--2);
+        color: var(--color-brand--2);
+        outline: none;
     }
 
     .footer {
         display: none;
     }
+}
+
+.mobilePanelClose { display: none; }
+
+@media (max-width: 760px) {
+    .mobilePanelClose { display: grid; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sidebar { transition: none; }
 }
