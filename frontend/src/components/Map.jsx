@@ -45,6 +45,9 @@ export default function Map({ mobilePanelOpen, onOpenPlaces }) {
             ? [cities[0].position.lat, cities[0].position.lng]
             : [40, 0],
     );
+    const [isMobileViewport, setIsMobileViewport] = useState(() =>
+        window.matchMedia("(max-width: 760px)").matches,
+    );
     const [selectedPlace, setSelectedPlace] = useState(null);
     const isAddingLocation =
         location.pathname === "/app/form" &&
@@ -56,6 +59,17 @@ export default function Map({ mobilePanelOpen, onOpenPlaces }) {
         geolocationPosition &&
         Math.abs(geolocationPosition.lat - mapPosition[0]) < 0.0001 &&
         Math.abs(geolocationPosition.lng - mapPosition[1]) < 0.0001;
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(max-width: 760px)");
+        const updateViewport = () =>
+            setIsMobileViewport(mediaQuery.matches);
+
+        updateViewport();
+        mediaQuery.addEventListener("change", updateViewport);
+        return () =>
+            mediaQuery.removeEventListener("change", updateViewport);
+    }, []);
 
     useEffect(
         function () {
@@ -127,7 +141,7 @@ export default function Map({ mobilePanelOpen, onOpenPlaces }) {
                             navigate(`form?${params.toString()}`);
                         }}
                     />
-                    {!mobilePanelOpen && (
+                    {isMobileViewport && !mobilePanelOpen && (
                         <button
                             className={styles.mobilePlacesButton}
                             type="button"
