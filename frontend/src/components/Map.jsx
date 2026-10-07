@@ -164,6 +164,23 @@ export default function Map({ mobilePanelOpen, onOpenPlaces }) {
                             use your position
                         </Button>
                     )}
+                    {isMobileViewport && !mobilePanelOpen && (
+                        <button
+                            className={styles.mobileHomeButton}
+                            type="button"
+                            aria-label="Go to homepage"
+                            title="Home"
+                            onClick={() => navigate("/")}
+                        >
+                            <svg
+                                aria-hidden="true"
+                                viewBox="0 0 24 24"
+                                focusable="false"
+                            >
+                                <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
+                            </svg>
+                        </button>
+                    )}
 
                     <MapContainer
                         center={mapPosition}
