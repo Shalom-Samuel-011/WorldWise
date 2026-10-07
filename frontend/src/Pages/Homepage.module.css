@@ -126,3 +126,29 @@
         width: 55vw;
     }
 }
+
+@media (max-width: 380px) {
+    .homepage {
+        padding: 1.6rem;
+    }
+
+    .homepage section {
+        gap: 1.8rem;
+    }
+
+    .homepage h1 {
+        font-size: clamp(3.8rem, 12vw, 4.6rem);
+        line-height: 1.04;
+    }
+
+    .homepage h1::before {
+        margin-bottom: 1.6rem;
+        font-size: 1rem;
+        letter-spacing: 0.16em;
+    }
+
+    .homepage h2 {
+        font-size: 1.5rem;
+        line-height: 1.65;
+    }
+}

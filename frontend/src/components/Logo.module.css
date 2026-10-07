@@ -8,7 +8,7 @@
 
 .logo {
     display: block;
-    height: 5.2rem;
+    height: clamp(4.2rem, 7vw, 5.2rem);
     width: auto;
     max-width: none;
     aspect-ratio: auto;

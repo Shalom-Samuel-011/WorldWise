@@ -151,10 +151,17 @@
     border-left: 3px solid var(--color-brand--2);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 820px) {
     .mapContainer {
+        height: clamp(28rem, 54svh, 56rem);
         min-height: 28rem;
-        flex: 1 1 55%;
+        flex: 0 0 auto;
         border-radius: 1.4rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .mapContainer {
+        border-radius: 1.1rem;
     }
 }

@@ -69,10 +69,23 @@
 
 @media (max-width: 520px) {
     .signup {
-        padding: 2rem;
+        padding: 1.8rem clamp(1.4rem, 5vw, 2rem);
     }
 
     .form {
-        margin-top: 5rem;
+        margin-top: clamp(2.4rem, 6vh, 5rem);
+        padding: clamp(2rem, 6vw, 2.8rem);
+    }
+
+    .buttons > button {
+        flex: 1 1 12rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .form {
+        gap: 1.5rem;
+        border-radius: 1.5rem;
+        padding: 2rem 1.6rem;
     }
 }

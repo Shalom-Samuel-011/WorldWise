@@ -58,17 +58,42 @@
 
 @media (max-width: 520px) {
     .nav {
-        align-items: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.2rem;
     }
 
     .nav ul {
+        width: 100%;
         flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 1rem 1.5rem;
+        justify-content: space-between;
+        gap: 0.8rem 1.2rem;
+    }
+
+    .loginBtn {
+        min-height: 4rem;
+        padding: 0.6rem 1.4rem;
     }
 
     .nav a:link,
     .nav a:visited {
         font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .nav {
+        gap: 0.8rem;
+    }
+
+    .nav ul {
+        justify-content: flex-start;
+        column-gap: 1.4rem;
+    }
+
+    .nav a:link,
+    .nav a:visited {
+        font-size: 1rem;
+        letter-spacing: 0.07em;
     }
 }

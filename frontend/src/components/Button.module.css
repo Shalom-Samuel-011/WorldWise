@@ -81,3 +81,11 @@
 .position:active {
     transform: translateX(-50%);
 }
+
+@media (max-width: 820px) {
+    .position {
+        bottom: 1.6rem;
+        max-width: calc(100% - 2.4rem);
+        white-space: nowrap;
+    }
+}
