@@ -2,7 +2,10 @@ const citiesModel = require("../models/citiesModel");
 const appError = require("../utils/appError");
 const { uploadMemory, deleteMemory } = require("../utils/cloudinary");
 
-function ensureCloudinaryConfigured(next) {
+function ensureCloudinaryConfigured(
+    next,
+    message = "Memory uploads are not configured on the server",
+) {
     const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
         process.env;
 
@@ -10,7 +13,7 @@ function ensureCloudinaryConfigured(next) {
         return true;
     }
 
-    next(new appError("Memory uploads are not configured on the server", 503));
+    next(new appError(message, 503));
     return false;
 }
 
@@ -55,7 +58,14 @@ exports.deleteCity = async function (req, res, next) {
 
     if (!city) return next(new appError("City not found", 404));
 
-    if (city.memories.length && !ensureCloudinaryConfigured(next)) return;
+    if (
+        city.memories.length &&
+        !ensureCloudinaryConfigured(
+            next,
+            "This city has saved photos or videos that cannot be removed right now. Please contact the site owner.",
+        )
+    )
+        return;
     await Promise.all(
         city.memories.map((memory) =>
             deleteMemory(memory.publicId, memory.resourceType),

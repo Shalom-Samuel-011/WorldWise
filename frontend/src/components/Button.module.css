@@ -73,3 +73,11 @@
     color: var(--color-ink);
     box-shadow: 0 0.9rem 2.8rem rgba(0, 0, 0, 0.35);
 }
+
+.position:hover {
+    transform: translate(-50%, -2px);
+}
+
+.position:active {
+    transform: translateX(-50%);
+}
