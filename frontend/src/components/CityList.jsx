@@ -4,8 +4,14 @@ import Spinner from "./Spinner";
 import useCities from "../hooks/useCities";
 
 export default function CityList() {
-    const { cities, loading } = useCities();
+    const { cities, loading, error } = useCities();
     if (loading) return <Spinner />;
+    if (error)
+        return (
+            <p role="alert" className={styles.error}>
+                {error}
+            </p>
+        );
     if (!cities.length)
         return <h2>👋 Add your first city by clicking on a city on the map</h2>;
     return (
