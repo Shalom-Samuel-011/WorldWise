@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import useAuth from "../hooks/useAuth";
 import styles from "./User.module.css";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -337,7 +338,8 @@ function User({ placement = "map", includeNavigation = false }) {
                 )}
             </div>
 
-            {isProfileOpen && !isEditProfileOpen && !isPasswordOpen && (
+            {isProfileOpen && !isEditProfileOpen && !isPasswordOpen &&
+                createPortal(
                 <div
                     className={styles.profileBackdrop}
                     onMouseDown={(event) => {
@@ -429,10 +431,12 @@ function User({ placement = "map", includeNavigation = false }) {
                             </p>
                         )}
                     </section>
-                </div>
+                </div>,
+                document.body,
             )}
 
-            {isEditProfileOpen && (
+            {isEditProfileOpen &&
+                createPortal(
                 <div
                     className={styles.profileBackdrop}
                     onMouseDown={(event) => {
@@ -561,10 +565,12 @@ function User({ placement = "map", includeNavigation = false }) {
                             </button>
                         </div>
                     </section>
-                </div>
+                </div>,
+                document.body,
             )}
 
-            {isPasswordOpen && (
+            {isPasswordOpen &&
+                createPortal(
                 <div
                     className={styles.profileBackdrop}
                     onMouseDown={(event) => {
@@ -702,7 +708,8 @@ function User({ placement = "map", includeNavigation = false }) {
                             </div>
                         </form>
                     </section>
-                </div>
+                </div>,
+                document.body,
             )}
             {profileMessage && (
                 <div className={styles.profileToast} role="status">
