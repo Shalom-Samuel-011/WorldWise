@@ -42,8 +42,9 @@ export default function GoogleSignIn({ onAuthSuccess }) {
                 onError={() =>
                     setError("Google sign-in could not be completed")
                 }
-                theme="outline"
-                shape="rectangular"
+                theme="filled_black"
+                shape="pill"
+                size="large"
                 text="continue_with"
                 width="360"
             />
@@ -55,3 +56,4 @@ export default function GoogleSignIn({ onAuthSuccess }) {
         </div>
     );
 }
+
