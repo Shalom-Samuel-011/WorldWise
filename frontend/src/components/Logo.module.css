@@ -1,3 +1,26 @@
+.logoLink {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    text-decoration: none;
+    line-height: 0;
+}
+
 .logo {
-  height: 5.2rem;
+    display: block;
+    height: 5.2rem;
+    width: auto;
+    max-width: none;
+    aspect-ratio: auto;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    animation: none;
+    object-fit: contain;
+    transition: transform 0.15s ease;
+}
+
+.logoLink:hover .logo,
+.logoLink:focus-visible .logo {
+    transform: scale(1.02);
 }

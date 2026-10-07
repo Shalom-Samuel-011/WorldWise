@@ -269,7 +269,11 @@ function User({ placement = "map" }) {
                     {hasAvatar ? (
                         <img
                             src={user.avatar}
-                            alt=""
+                            alt={
+                                user.name
+                                    ? `${user.name}'s profile picture`
+                                    : "Profile picture"
+                            }
                             onError={() => setAvatarLoadFailed(true)}
                         />
                     ) : (
@@ -336,7 +340,11 @@ function User({ placement = "map" }) {
                             {hasAvatar ? (
                                 <img
                                     src={user.avatar}
-                                    alt=""
+                                    alt={
+                                        user.name
+                                            ? `${user.name}'s profile picture`
+                                            : "Profile picture"
+                                    }
                                     onError={() => setAvatarLoadFailed(true)}
                                 />
                             ) : (

@@ -4,14 +4,14 @@ import Map from "../components/Map";
 import styles from "./AppLayout.module.css";
 import { CitiesProvider } from "../contexts/CitiesContext";
 
-const MIN_SIDEBAR_WIDTH = 280;
-const MAX_SIDEBAR_WIDTH = 720;
-const DEFAULT_SIDEBAR_WIDTH = 560;
+const MIN_SIDEBAR_WIDTH = 300;
+const MAX_SIDEBAR_WIDTH = 600;
+const DEFAULT_SIDEBAR_WIDTH = 420;
 
 function getMaximumSidebarWidth() {
     return Math.max(
         MIN_SIDEBAR_WIDTH,
-        Math.min(MAX_SIDEBAR_WIDTH, window.innerWidth - 360),
+        Math.min(MAX_SIDEBAR_WIDTH, window.innerWidth - 400),
     );
 }
 

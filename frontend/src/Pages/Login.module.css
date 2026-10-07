@@ -1,22 +1,40 @@
 .login {
-    margin: 2.5rem;
-    padding: 2.5rem 5rem;
-    background-color: var(--color-dark--1);
-    min-height: calc(100vh - 5rem);
+    min-height: 100vh;
+    padding: 2.8rem clamp(2rem, 7vw, 10rem);
+    background:
+        radial-gradient(
+            ellipse at 85% 18%,
+            rgba(184, 219, 232, 0.11),
+            transparent 28%
+        ),
+        linear-gradient(135deg, #0c0f12, #14181f 80%);
 }
 
 .form {
-    background-color: var(--color-dark--2);
-    border-radius: 7px;
-    padding: 2rem 3rem;
-    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.8rem;
+    width: min(100%, 48rem);
+    margin: clamp(5rem, 11vh, 10rem) auto;
+    border: 1px solid rgba(210, 228, 240, 0.12);
+    border-radius: 2rem;
+    padding: clamp(2.4rem, 5vw, 4rem);
+    background: rgba(19, 24, 30, 0.88);
+    box-shadow: var(--shadow-panel);
+    backdrop-filter: blur(1.2rem);
+    animation: formRise 0.48s ease-out both;
+}
 
-    /* Different from other form */
-    width: 48rem;
-    margin: 8rem auto;
+.form h1 {
+    color: #eaf1f6;
+    font-size: 3rem;
+    letter-spacing: -0.045em;
+    line-height: 1.15;
+}
+
+.form > p:not(.formMessage) {
+    color: #92a4b2;
+    font-size: 1.45rem;
 }
 
 .row {
@@ -45,7 +63,10 @@
 
 .buttons {
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    gap: 1.2rem;
+    flex-wrap: wrap;
 }
 
 .oauthDivider {
@@ -62,4 +83,26 @@
     height: 1px;
     background: rgba(236, 236, 236, 0.2);
     content: "";
+}
+
+@keyframes formRise {
+    from {
+        opacity: 0;
+        transform: translateY(1.4rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 520px) {
+    .login {
+        padding: 2rem;
+    }
+
+    .form {
+        margin-top: 5rem;
+    }
 }

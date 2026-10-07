@@ -1,12 +1,54 @@
 .mapContainer {
-    flex: 1;
-    height: 100%;
-    background-color: var(--color-dark--2);
     position: relative;
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid rgba(231, 239, 224, 0.12);
+    border-radius: 2rem;
+    background-color: var(--color-dark--2);
+    box-shadow: var(--shadow-panel);
 }
 
 .map {
     height: 100%;
+}
+
+:global(.leaflet-container) {
+    background: #cad4db;
+    font-family: "DM Sans", "Manrope", sans-serif;
+}
+
+:global(.leaflet-control-zoom) {
+    overflow: hidden;
+    border: 1px solid rgba(20, 30, 40, 0.15) !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 0.7rem 2rem rgba(0, 0, 0, 0.2) !important;
+}
+
+:global(.leaflet-control-zoom a) {
+    width: 3.8rem !important;
+    height: 3.8rem !important;
+    border-bottom-color: rgba(20, 30, 40, 0.1) !important;
+    background: rgba(238, 244, 248, 0.96) !important;
+    color: #1a2228 !important;
+    line-height: 3.8rem !important;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+:global(.leaflet-control-zoom a:hover) {
+    background: var(--color-brand--2) !important;
+    color: var(--color-ink) !important;
+}
+
+:global(.leaflet-control-attribution) {
+    border-radius: 0.6rem 0 0 0;
+    background: rgba(238, 244, 248, 0.8) !important;
+    color: #3b4d5a;
+    font-size: 1rem !important;
+    backdrop-filter: blur(0.4rem);
 }
 
 .draftMarker {
@@ -27,8 +69,8 @@
 .draftMarkerHalo {
     width: 2rem;
     height: 2rem;
-    border: 2px solid var(--color-brand--1);
-    box-shadow: 0 0 1.2rem rgba(255, 181, 69, 0.8);
+    border: 2px solid var(--color-brand--2);
+    box-shadow: 0 0 1.2rem rgba(184, 219, 232, 0.85);
     animation: draftMarkerPulse 1.8s ease-out infinite;
 }
 
@@ -83,12 +125,14 @@
 :global(.leaflet-popup .leaflet-popup-content-wrapper) {
     background-color: var(--color-dark--1);
     color: var(--color-light--2);
-    border-radius: 5px;
+    border: 1px solid rgba(235, 241, 229, 0.12);
+    border-radius: 1rem;
     padding-right: 0.6rem;
+    box-shadow: 0 0.8rem 2.2rem rgba(0, 0, 0, 0.25);
 }
 
 :global(.leaflet-popup .leaflet-popup-content) {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -104,5 +148,13 @@
 }
 
 :global(.leaflet-popup-content-wrapper) {
-    border-left: 5px solid var(--color-brand--2);
+    border-left: 3px solid var(--color-brand--2);
+}
+
+@media (max-width: 760px) {
+    .mapContainer {
+        min-height: 28rem;
+        flex: 1 1 55%;
+        border-radius: 1.4rem;
+    }
 }

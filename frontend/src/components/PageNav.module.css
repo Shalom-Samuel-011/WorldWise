@@ -1,38 +1,74 @@
-.header {
-    display: flex;
-    justify-content: space-between;
-}
 .nav {
+    position: relative;
+    z-index: 2;
     display: flex;
+    width: min(100%, 144rem);
     align-items: center;
     justify-content: space-between;
+    gap: 2rem;
+    margin: 0 auto;
 }
 
 .nav ul {
-    list-style: none;
     display: flex;
     align-items: center;
-    gap: 4rem;
+    gap: clamp(1.4rem, 3vw, 3.4rem);
+    list-style: none;
 }
 
 .nav a:link,
 .nav a:visited {
+    color: #9cb0be;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-decoration: none;
-    color: var(--color-light--2);
     text-transform: uppercase;
-    font-size: 1.5rem;
-    font-weight: 600;
+    transition: color 0.18s ease;
 }
 
-/* CSS Modules feature */
+.nav a:hover,
+.nav a:focus-visible,
 .nav a:global(.active) {
     color: var(--color-brand--2);
 }
 
-a.ctaLink:link,
-a.ctaLink:visited {
-    background-color: var(--color-brand--2);
-    color: var(--color-dark--0);
-    padding: 0.8rem 2rem;
-    border-radius: 7px;
+.loginBtn {
+    min-height: 4.4rem;
+    border: 1px solid rgba(210, 228, 240, 0.22);
+    border-radius: 999px;
+    padding: 0.7rem 1.8rem;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-light--2);
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        border-color 0.18s ease,
+        background-color 0.18s ease,
+        color 0.18s ease;
+}
+
+.loginBtn:hover,
+.loginBtn:focus-visible {
+    border-color: var(--color-brand--2);
+    background: var(--color-brand--2);
+    color: var(--color-ink);
+}
+
+@media (max-width: 520px) {
+    .nav {
+        align-items: flex-start;
+    }
+
+    .nav ul {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 1rem 1.5rem;
+    }
+
+    .nav a:link,
+    .nav a:visited {
+        font-size: 1.1rem;
+    }
 }

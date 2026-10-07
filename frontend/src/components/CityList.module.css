@@ -1,15 +1,31 @@
 .cityList {
     width: 100%;
-    height: 65vh;
+    min-height: 0;
+    max-height: 65vh;
     list-style: none;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
-
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
+    gap: 0.9rem;
+    padding: 0.3rem 0.4rem 1rem 0;
 }
 
 .cityList::-webkit-scrollbar {
-    width: 0;
+    width: 0.5rem;
+}
+
+.cityList::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(166, 184, 173, 0.3);
+}
+
+.cityList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+@media (max-width: 760px) {
+    .cityList {
+        max-height: 22vh;
+    }
 }
