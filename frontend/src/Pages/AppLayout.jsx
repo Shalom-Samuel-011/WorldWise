@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Map from "../components/Map";
 import styles from "./AppLayout.module.css";
@@ -27,8 +28,11 @@ export default function AppLayout() {
 }
 
 function ResizableApp() {
+    const location = useLocation();
+    const navigate = useNavigate();
     const appRef = useRef(null);
     const isResizing = useRef(false);
+    const [mobilePanelOpen, setMobilePanelOpen] = useState(false);
     const [sidebarWidth, setSidebarWidth] = useState(() => {
         const savedWidth = Number(
             localStorage.getItem("worldwise-sidebar-width"),
@@ -43,6 +47,26 @@ function ResizableApp() {
     useEffect(() => {
         localStorage.setItem("worldwise-sidebar-width", sidebarWidth);
     }, [sidebarWidth]);
+
+    useEffect(() => {
+        function syncMobilePanel() {
+            if (window.innerWidth > 760) {
+                setMobilePanelOpen(false);
+                return;
+            }
+
+            if (
+                location.pathname === "/app/form" ||
+                /^\/app\/cities\/[^/]+$/.test(location.pathname)
+            ) {
+                setMobilePanelOpen(true);
+            }
+        }
+
+        syncMobilePanel();
+        window.addEventListener("resize", syncMobilePanel);
+        return () => window.removeEventListener("resize", syncMobilePanel);
+    }, [location.pathname]);
 
     useEffect(() => {
         function handleWindowResize() {
@@ -68,6 +92,35 @@ function ResizableApp() {
     function stopResizing() {
         isResizing.current = false;
     }
+
+    const closeMobilePanel = useCallback(function () {
+        setMobilePanelOpen(false);
+
+        if (
+            location.pathname === "/app/form" ||
+            /^\/app\/cities\/[^/]+$/.test(location.pathname)
+        ) {
+            navigate("/app/cities", {
+                replace: true,
+                state:
+                    location.pathname === "/app/form" &&
+                    location.state?.source === "geolocation"
+                        ? { clearGeolocation: true }
+                        : null,
+            });
+        }
+    }, [location.pathname, location.state, navigate]);
+
+    useEffect(() => {
+        if (!mobilePanelOpen || window.innerWidth > 760) return undefined;
+
+        function closeOnEscape(event) {
+            if (event.key === "Escape") closeMobilePanel();
+        }
+
+        document.addEventListener("keydown", closeOnEscape);
+        return () => document.removeEventListener("keydown", closeOnEscape);
+    }, [mobilePanelOpen, closeMobilePanel]);
 
     function handleResizeKeyDown(event) {
         const step = event.shiftKey ? 40 : 20;
@@ -95,7 +148,10 @@ function ResizableApp() {
             onPointerCancel={stopResizing}
         >
             <CitiesProvider>
-                <Sidebar />
+                <Sidebar
+                    mobileOpen={mobilePanelOpen}
+                    onClose={closeMobilePanel}
+                />
                 <div
                     className={styles.resizeHandle}
                     role="separator"
@@ -115,7 +171,18 @@ function ResizableApp() {
                 >
                     <span className={styles.resizeGrip} aria-hidden="true" />
                 </div>
-                <Map />
+                <Map
+                    mobilePanelOpen={mobilePanelOpen}
+                    onOpenPlaces={() => setMobilePanelOpen(true)}
+                />
+                {mobilePanelOpen && (
+                    <button
+                        className={styles.mobileBackdrop}
+                        type="button"
+                        aria-label="Close places panel"
+                        onClick={closeMobilePanel}
+                    />
+                )}
             </CitiesProvider>
         </div>
     );

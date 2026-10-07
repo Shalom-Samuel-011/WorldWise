@@ -27,7 +27,7 @@ const draftLocationIcon = divIcon({
     iconAnchor: [22, 22],
 });
 
-export default function Map() {
+export default function Map({ mobilePanelOpen, onOpenPlaces }) {
     const navigate = useNavigate();
     const location = useLocation();
     const [draftLat, draftLng] = useUrlPosition();
@@ -127,6 +127,19 @@ export default function Map() {
                             navigate(`form?${params.toString()}`);
                         }}
                     />
+                    {!mobilePanelOpen && (
+                        <button
+                            className={styles.mobilePlacesButton}
+                            type="button"
+                            aria-label="Open your saved places"
+                            onClick={onOpenPlaces}
+                        >
+                            My places
+                            {cities.length > 0 && (
+                                <span>{cities.length}</span>
+                            )}
+                        </button>
+                    )}
                     {!onUserPosition && (
                         <Button
                             type="position"

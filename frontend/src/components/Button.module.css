@@ -89,3 +89,20 @@
         white-space: nowrap;
     }
 }
+
+@media (max-width: 760px) {
+    .position {
+        right: 1.2rem;
+        bottom: calc(5.8rem + env(safe-area-inset-bottom));
+        left: auto;
+        max-width: calc(100% - 2.4rem);
+        padding: 0.9rem 1.2rem;
+        font-size: 1.1rem;
+        letter-spacing: 0.03em;
+        transform: none;
+        white-space: nowrap;
+    }
+
+    .position:hover { transform: translateY(-2px); }
+    .position:active { transform: none; }
+}
