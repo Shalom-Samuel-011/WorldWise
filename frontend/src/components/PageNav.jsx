@@ -27,7 +27,10 @@ export default function Header() {
             document.removeEventListener("pointerdown", closeOnOutsideClick);
     }, [menuOpen]);
 
-    useEffect(() => setMenuOpen(false), [location.pathname]);
+    useEffect(
+        () => setMenuOpen(false),
+        [isAuthenticated, location.pathname],
+    );
 
     function handleMenuKeyDown(event) {
         if (event.key !== "Escape" || !menuOpen) return;
@@ -46,22 +49,9 @@ export default function Header() {
             onKeyDown={handleMenuKeyDown}
         >
             <Logo />
-            <button
-                ref={toggleRef}
-                className={styles.menuToggle}
-                type="button"
-                aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
-                aria-expanded={menuOpen}
-                aria-controls="primary-navigation"
-                onClick={() => setMenuOpen((open) => !open)}
-            >
-                <span className={styles.menuBar} />
-                <span className={styles.menuBar} />
-                <span className={styles.menuBar} />
-            </button>
             <ul
                 id="primary-navigation"
-                className={`${styles.menu} ${menuOpen ? styles.menuOpen : ""}`}
+                className={`${styles.menu} ${menuOpen && !isAuthenticated ? styles.menuOpen : ""}`}
             >
                 <li>
                     <NavLink to="/how-it-works" onClick={closeMenu}>
@@ -73,10 +63,8 @@ export default function Header() {
                         FEATURES &amp; PROJECT
                     </NavLink>
                 </li>
-                <li>
-                    {isAuthenticated ? (
-                        <User placement="navigation" />
-                    ) : (
+                {!isAuthenticated && (
+                    <li>
                         <Button
                             type="primary"
                             className={styles.loginBtn}
@@ -87,9 +75,32 @@ export default function Header() {
                         >
                             Log in
                         </Button>
-                    )}
-                </li>
+                    </li>
+                )}
             </ul>
+            <div className={styles.navActions}>
+                {isAuthenticated ? (
+                    <User placement="navigation" includeNavigation />
+                ) : (
+                    <button
+                        ref={toggleRef}
+                        className={styles.menuToggle}
+                        type="button"
+                        aria-label={
+                            menuOpen
+                                ? "Close navigation menu"
+                                : "Open navigation menu"
+                        }
+                        aria-expanded={menuOpen}
+                        aria-controls="primary-navigation"
+                        onClick={() => setMenuOpen((open) => !open)}
+                    >
+                        <span className={styles.menuBar} />
+                        <span className={styles.menuBar} />
+                        <span className={styles.menuBar} />
+                    </button>
+                )}
+            </div>
         </nav>
     );
 }

@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import styles from "./User.module.css";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { API_BASE_URL, getAuthHeaders } from "../api";
 import PasswordInput from "./PasswordInput";
 
 const MAX_AVATAR_SIZE = 10 * 1024 * 1024;
 
-function User({ placement = "map" }) {
+function User({ placement = "map", includeNavigation = false }) {
     const { logout, isAuthenticated, user, login, updateProfile } = useAuth();
     const navigate = useNavigate();
     const profileRef = useRef(null);
@@ -261,7 +261,11 @@ function User({ placement = "map" }) {
                     ref={triggerRef}
                     className={styles.profileTrigger}
                     type="button"
-                    aria-label="Open profile menu"
+                    aria-label={
+                        includeNavigation
+                            ? "Open account and navigation menu"
+                            : "Open profile menu"
+                    }
                     aria-haspopup="menu"
                     aria-expanded={isMenuOpen}
                     onClick={() => setIsMenuOpen((open) => !open)}
@@ -302,6 +306,26 @@ function User({ placement = "map" }) {
                             My profile
                         </button>
                         <div className={styles.divider} />
+                        {includeNavigation && (
+                            <div className={styles.navigationSection}>
+                                <p className={styles.menuSectionLabel}>Explore</p>
+                                <NavLink
+                                    to="/how-it-works"
+                                    role="menuitem"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    How it works
+                                </NavLink>
+                                <NavLink
+                                    to="/product"
+                                    role="menuitem"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    Features &amp; project
+                                </NavLink>
+                                <div className={styles.divider} />
+                            </div>
+                        )}
                         <button
                             type="button"
                             role="menuitem"

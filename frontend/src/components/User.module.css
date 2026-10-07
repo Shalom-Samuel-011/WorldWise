@@ -107,10 +107,37 @@ button.profileTrigger[aria-expanded="true"],
     cursor: pointer;
 }
 
+.menu a:link,
+.menu a:visited {
+    display: block;
+    width: 100%;
+    border-radius: 4px;
+    padding: 0.9rem 0.8rem;
+    color: var(--color-light--2);
+    font-size: 1.4rem;
+    text-decoration: none;
+}
+
 .menu button:hover,
-.menu button:focus-visible {
+.menu button:focus-visible,
+.menu a:hover,
+.menu a:focus-visible,
+.menu a:global(.active) {
     background: var(--color-dark--2);
     outline: none;
+}
+
+.menuSectionLabel {
+    margin: 0.8rem 0.8rem 0.3rem;
+    color: var(--color-brand--1);
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.navigationSection {
+    display: none;
 }
 
 .divider {
@@ -490,6 +517,10 @@ button.profileTrigger[aria-expanded="true"],
         min-height: 4.4rem;
         max-height: 4.4rem;
     }
+}
+
+@media (max-width: 760px) {
+    .navigationSection { display: block; }
 }
 
 @media (hover: none) {
