@@ -1,78 +1,163 @@
-/* Taken from getting started guide at: https://leafletjs.com/examples/quick-start/ */
 @import "https://unpkg.com/leaflet@1.7.1/dist/leaflet.css";
-@import "https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap";
+@import "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap";
 
-/* These CSS variables are global, so they are available in all CSS modules */
 :root {
-    --color-brand--1: #ffb545;
-    --color-brand--2: #00c46a;
+    font-family: "DM Sans", "Manrope", sans-serif;
+    color: #f3f5ed;
+    background: #0e1917;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
-    --color-dark--0: #242a2e;
-    --color-dark--1: #2d3439;
-    --color-dark--2: #42484d;
-    --color-light--1: #aaa;
-    --color-light--2: #ececec;
-    --color-light--3: #d6dee0;
+    --color-brand--1: #7ea8c4;
+    --color-brand--2: #b8dbe8;
+
+    --color-dark--0: #0c0f12;
+    --color-dark--1: #13171c;
+    --color-dark--2: #1b2128;
+    --color-light--1: #8295a4;
+    --color-light--2: #eef4f8;
+    --color-light--3: #d3e2ec;
+    --color-paper: #edf4f8;
+    --color-ink: #0c1115;
+    --color-line: rgba(210, 228, 240, 0.11);
+    --shadow-panel: 0 2.4rem 7rem rgba(0, 0, 0, 0.45);
 }
 
 * {
     margin: 0;
     padding: 0;
-    box-sizing: inherit;
-}
-
-html {
-    font-size: 62.5%;
     box-sizing: border-box;
 }
 
+html {
+    min-width: 320px;
+    min-height: 100%;
+    font-size: 62.5%;
+}
+
 body {
-    font-family: "Manrope", sans-serif;
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
     color: var(--color-light--2);
+    background:
+        radial-gradient(ellipse at 80% 12%, rgba(184, 219, 232, 0.08), transparent 36%),
+        var(--color-dark--0);
+    font-family: "DM Sans", "Manrope", sans-serif;
+    font-size: 1.6rem;
     font-weight: 400;
     line-height: 1.6;
 }
 
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+button,
+a,
+input,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    color: inherit;
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+}
+
 label {
-    font-size: 1.6rem;
-    font-weight: 600;
+    color: var(--color-light--2);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.015em;
 }
 
 input,
 textarea {
     width: 100%;
-    padding: 0.8rem 1.2rem;
+    border: 1px solid rgba(210, 228, 240, 0.12);
+    border-radius: 1rem;
+    padding: 1.05rem 1.3rem;
+    background: #e6eef3;
+    color: var(--color-ink);
     font-family: inherit;
-    font-size: 1.6rem;
-    border: none;
-    border-radius: 5px;
-    background-color: var(--color-light--3);
-    transition: all 0.2s;
+    font-size: 1.5rem;
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background-color 0.18s ease;
 }
 
-input:focus {
+input::placeholder,
+textarea::placeholder {
+    color: #6a7c8b;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--color-brand--2);
     outline: none;
-    background-color: #fff;
+    background: #f2f7fa;
+    box-shadow: 0 0 0 0.35rem rgba(184, 219, 232, 0.22);
+}
+
+::selection {
+    color: var(--color-ink);
+    background: var(--color-brand--2);
 }
 
 .cta:link,
 .cta:visited {
-    display: inline-block;
-    background-color: var(--color-brand--2);
-    color: var(--color-dark--1);
-    text-transform: uppercase;
+    display: inline-flex;
+    min-height: 5.2rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-brand--2);
+    border-radius: 999px;
+    padding: 1rem 2.6rem;
+    background: var(--color-brand--2);
+    color: var(--color-ink);
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
     text-decoration: none;
-    font-size: 1.6rem;
-    font-weight: 600;
-    padding: 1rem 3rem;
-    border-radius: 5px;
+    text-transform: uppercase;
+    box-shadow: 0 1rem 3rem rgba(184, 219, 232, 0.2);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
 }
 
-/*
-"importCSSModule": {
-    "prefix": "csm",
-    "scope": "javascript,typescript,javascriptreact",
-    "body": ["import styles from './${TM_FILENAME_BASE}.module.css'"],
-    "description": "Import CSS Module as `styles`"
-  },
-*/
+.cta:hover {
+    transform: translateY(-2px);
+    background: #d4ecf5;
+    box-shadow: 0 1.4rem 3.5rem rgba(184, 219, 232, 0.28);
+}
+
+:focus-visible {
+    outline: 2px solid var(--color-brand--2);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -1,34 +1,45 @@
 .app {
-    height: 100vh;
-    padding: 2.4rem;
-    overscroll-behavior-y: none;
-    display: flex;
     position: relative;
+    display: flex;
+    height: 100vh;
+    min-height: 54rem;
+    gap: 1.2rem;
+    overflow: hidden;
+    padding: 1.4rem;
+    background:
+        radial-gradient(ellipse at 75% 10%, rgba(184, 219, 232, 0.08), transparent 28%),
+        var(--color-dark--0);
+    overscroll-behavior-y: none;
 }
 
 .resizeHandle {
     position: absolute;
     z-index: 1001;
     top: 50%;
-    left: calc(2.4rem + var(--sidebar-width, 56rem));
-    width: 2.8rem;
-    height: 6rem;
-    transform: translate(-50%, -50%);
+    left: calc(1.4rem + var(--sidebar-width, 42rem) + 0.6rem);
     display: grid;
+    width: 2.2rem;
+    height: 6rem;
     place-items: center;
-    border: 0;
-    border-radius: 0.4rem;
-    background: var(--color-dark--2);
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(210, 228, 240, 0.12);
+    border-radius: 999px;
+    background: var(--color-dark--1);
     color: var(--color-light--1);
     cursor: col-resize;
     touch-action: none;
     opacity: 0;
-    transition: opacity 0.15s;
+    transition:
+        opacity 0.2s ease,
+        color 0.2s ease,
+        background-color 0.2s ease;
 }
 
 .resizeHandle:hover,
 .resizeHandle:focus-visible,
 .resizing .resizeHandle {
+    background: var(--color-dark--2);
+    color: var(--color-brand--2);
     opacity: 1;
 }
 
@@ -38,18 +49,27 @@
 }
 
 .resizeGrip {
-    width: 0.8rem;
-    height: 3.2rem;
-    background-image: radial-gradient(
-        circle,
-        currentColor 1px,
-        transparent 1.5px
-    );
-    background-size: 0.4rem 0.8rem;
+    width: 0.7rem;
+    height: 3rem;
+    background-image: radial-gradient(circle, currentColor 1px, transparent 1.5px);
     background-position: center;
+    background-size: 0.4rem 0.75rem;
 }
 
 .resizing {
     cursor: col-resize;
     user-select: none;
+}
+
+@media (max-width: 760px) {
+    .app {
+        min-height: 0;
+        flex-direction: column-reverse;
+        gap: 0.8rem;
+        padding: 0.8rem;
+    }
+
+    .resizeHandle {
+        display: none;
+    }
 }

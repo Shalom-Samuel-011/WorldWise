@@ -1,17 +1,22 @@
 .form {
-    background-color: var(--color-dark--2);
-    border-radius: 7px;
-    padding: 2rem 3rem;
+    border: 1px solid rgba(210, 228, 240, 0.09);
+    border-radius: 1.5rem;
+    padding: 2.2rem;
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.6rem;
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(184, 219, 232, 0.08), transparent 42%),
+        rgba(21, 27, 34, 0.88);
+    box-shadow: 0 1.2rem 3rem rgba(0, 0, 0, 0.25);
+    animation: formReveal 0.28s ease-out both;
 }
 
 .row {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.65rem;
     position: relative;
 }
 
@@ -23,24 +28,53 @@
 .flag {
     position: absolute;
     right: 1rem;
-    top: 3.54rem;
-    width: 2.8rem;
-    height: 2.8rem;
-    font-size: 2.8rem;
+    top: 3.35rem;
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 2.4rem;
 }
 
 .form.loading {
-    opacity: 0.3;
+    opacity: 0.55;
+    pointer-events: none;
 }
 
 .form.loading button {
     pointer-events: none;
-    background-color: var(--color-light--1);
-    border: 1px solid var(--color-light--1);
+    background-color: #607383;
+    border-color: #607383;
     color: var(--color-dark--0);
 }
 
 :global(.react-datepicker) {
     font-family: inherit;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    border: 1px solid rgba(210, 228, 240, 0.15);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--shadow-panel);
+}
+
+:global(.react-datepicker__header) {
+    border-bottom-color: rgba(20, 30, 40, 0.1);
+    background: #dce7ee;
+}
+
+:global(.react-datepicker__day--selected),
+:global(.react-datepicker__day--keyboard-selected) {
+    border-radius: 50%;
+    background: #477341;
+    color: white;
+}
+
+@keyframes formReveal {
+    from {
+        opacity: 0;
+        transform: translateY(0.8rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

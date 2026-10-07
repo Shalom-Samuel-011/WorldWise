@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+﻿import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
 // import Product from "./Pages/Product";
@@ -36,7 +36,8 @@ export default function App() {
                     <Suspense fallback={<SpinnerFullPage />}>
                         <Routes>
                             <Route path="product" element={<Product />} />
-                            <Route path="pricing" element={<Pricing />} />
+                            <Route path="how-it-works" element={<Pricing />} />
+                            <Route path="pricing" element={<Navigate replace to="/how-it-works" />} />
                             <Route path="/" element={<Homepage />} />
 
                             <Route
@@ -87,3 +88,5 @@ export default function App() {
         application
     );
 }
+
+
