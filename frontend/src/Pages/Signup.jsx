@@ -110,8 +110,8 @@ export default function Signup() {
                 {message && <h2>{message}</h2>}
 
                 <div className={styles.buttons}>
-                    <Button type="primary" htmlType="submit">
-                        Sign up
+                    <Button type="primary" htmlType="submit" disabled={isLoading}>
+                        {isLoading ? "Creating account..." : "Sign up"}
                     </Button>
                     <Button type="secondary" onClick={handleClickLogin}>
                         Log in
